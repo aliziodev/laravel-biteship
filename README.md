@@ -1,9 +1,17 @@
 # Laravel Biteship
 
-[![Latest Version](https://img.shields.io/badge/version-1.0.0-blue.svg)](https://github.com/aliziodev/laravel-biteship)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![PHP Version](https://img.shields.io/badge/php-%5E8.3-blue.svg)](https://php.net)
-[![Laravel](https://img.shields.io/badge/laravel-%5E12.0%7C%5E13.0-red.svg)](https://laravel.com)
+<p align="center">
+  <!-- Baris 1 -->
+  <a href="https://github.com/aliziodev/laravel-biteship/actions"><img src="https://github.com/aliziodev/laravel-biteship/workflows/Tests/badge.svg" alt="Tests"></a>
+  <a href="https://github.com/aliziodev/laravel-biteship/actions"><img src="https://github.com/aliziodev/laravel-biteship/workflows/Code%20Quality/badge.svg" alt="Code Quality"></a>
+  <a href="https://packagist.org/packages/aliziodev/laravel-biteship"><img src="https://img.shields.io/packagist/v/aliziodev/laravel-biteship.svg" alt="Latest Version on Packagist"></a>
+  <a href="https://packagist.org/packages/aliziodev/laravel-biteship"><img src="https://img.shields.io/packagist/dt/aliziodev/laravel-biteship.svg" alt="Total Downloads"></a>
+</br>
+  <!-- Baris 2 -->
+  <a href="https://packagist.org/packages/aliziodev/laravel-biteship"><img src="https://img.shields.io/packagist/php-v/aliziodev/laravel-biteship.svg" alt="PHP Version"></a>
+  <a href="https://laravel.com/"><img src="https://img.shields.io/badge/Laravel-12.0%2B-orange.svg" alt="Laravel Version"></a>
+  <a href="https://deepwiki.com/aliziodev/laravel-biteship"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
+</p>
 
 Package Laravel untuk integrasi API [Biteship](https://biteship.com/) - aggregator pengiriman. Mempermudah perhitungan ongkir, pembuatan order, pelacakan, dan penanganan webhook di aplikasi Laravel Anda.
 
@@ -20,10 +28,6 @@ Package Laravel untuk integrasi API [Biteship](https://biteship.com/) - aggregat
 - ✅ **Type Safety** - Type hints lengkap dengan DTOs dan Enums
 - ✅ **Exception Handling** - Exception terstruktur untuk error API
 
-## Persyaratan
-
-- PHP ^8.3
-- Laravel ^12.0|^13.0
 
 ## Instalasi
 
