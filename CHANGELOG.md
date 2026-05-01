@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/aliziodev/laravel-biteship/compare/v1.0.0...v1.0.1) (2026-05-01)
+
+
+### Bug Fixes
+
+* **rates:** location method validation and type casting fixes ([cacf5ba](https://github.com/aliziodev/laravel-biteship/commit/cacf5ba4fcd3edd70d2e6936cd603a1d86e905c1))
+
 # 1.0.0 (2026-05-01)
 
 
