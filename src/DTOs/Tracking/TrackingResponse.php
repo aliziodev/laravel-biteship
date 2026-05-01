@@ -27,7 +27,7 @@ class TrackingResponse
             waybillId: $data['courier']['waybill_id'] ?? null,
             courierCompany: $data['courier']['company'] ?? '',
             courierType: $data['courier']['type'] ?? '',
-            status: TrackingStatus::from($data['status'] ?? 'confirmed'),
+            status: TrackingStatus::tryFrom($data['status'] ?? '') ?? TrackingStatus::Confirmed,
             history: $history,
         );
     }

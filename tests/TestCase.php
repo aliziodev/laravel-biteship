@@ -34,6 +34,10 @@ abstract class TestCase extends Orchestra
     {
         $path = __DIR__."/Fixtures/{$name}.json";
 
+        if (! file_exists($path)) {
+            throw new \RuntimeException("Fixture not found: {$path}");
+        }
+
         return json_decode(file_get_contents($path), true);
     }
 }

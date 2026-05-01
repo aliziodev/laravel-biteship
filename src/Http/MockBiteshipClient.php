@@ -11,8 +11,6 @@ use Illuminate\Support\Str;
 
 class MockBiteshipClient implements BiteshipClientInterface
 {
-    private array $mockOrders = [];
-
     public function get(string $uri, array $query = []): array
     {
         $this->simulateDelay();
@@ -25,6 +23,26 @@ class MockBiteshipClient implements BiteshipClientInterface
         // Check for specific order GET endpoint pattern: /v1/orders/{orderId}
         if (preg_match('/\/v1\/orders\/[^\/]+$/', $uri)) {
             return $this->mockGetOrderResponse($uri);
+        }
+
+        // Tracking by order ID: /v1/trackings/{orderId}/public
+        if (str_contains($uri, 'trackings') && str_contains($uri, 'public')) {
+            return $this->mockTrackingResponse();
+        }
+
+        // Tracking by waybill: /v1/trackings/{waybillId}/couriers/{courierCode}
+        if (str_contains($uri, 'trackings') && str_contains($uri, 'couriers')) {
+            return $this->mockTrackingResponse();
+        }
+
+        // Couriers list: /v1/couriers
+        if (str_contains($uri, '/v1/couriers')) {
+            return $this->mockCouriersResponse();
+        }
+
+        // Location search: /v1/maps/areas
+        if (str_contains($uri, 'maps/areas')) {
+            return $this->mockAreasResponse($query);
         }
 
         return ['success' => true];
@@ -119,7 +137,6 @@ class MockBiteshipClient implements BiteshipClientInterface
         }
 
         $orderId = 'ORD-'.strtoupper(Str::random(10));
-        $totalWeight = $this->calculateTotalWeight($data['items'] ?? []);
         $price = $this->calculateMockPrice($data['items'] ?? []);
 
         $response = [
@@ -165,8 +182,7 @@ class MockBiteshipClient implements BiteshipClientInterface
             'created_at' => now()->toIso8601String(),
         ];
 
-        // Store mock order for retrieval
-        $this->mockOrders[$orderId] = $response;
+        // Store mock order in cache for later retrieval
         cache()->put("mock_biteship_order_{$orderId}", $response, now()->addDays(7));
 
         return $response;
@@ -186,7 +202,7 @@ class MockBiteshipClient implements BiteshipClientInterface
             return $cachedOrder;
         }
 
-        // Return not found but with mock data if not in cache
+        // Return fallback mock data if not in cache
         return [
             'success' => true,
             'id' => $orderId,
@@ -221,6 +237,90 @@ class MockBiteshipClient implements BiteshipClientInterface
             'id' => $orderId,
             'status' => 'cancelled',
             'message' => 'Order cancelled successfully',
+        ];
+    }
+
+    private function mockTrackingResponse(): array
+    {
+        return [
+            'success' => true,
+            'id' => 'ORD-MOCK',
+            'status' => 'confirmed',
+            'history' => [
+                [
+                    'status' => 'confirmed',
+                    'note' => 'Order dikonfirmasi (mock)',
+                    'service_type' => 'regular',
+                    'updated_at' => now()->toIso8601String(),
+                ],
+            ],
+            'courier' => [
+                'company' => 'jne',
+                'type' => 'REG',
+                'waybill_id' => null,
+                'tracking_id' => null,
+            ],
+        ];
+    }
+
+    private function mockCouriersResponse(): array
+    {
+        $base = 'https://biteship.com/_next/image?url=%2Fimages%2Flanding%2F';
+        $suffix = '.webp&w=256&q=75';
+
+        return [
+            'success' => true,
+            'couriers' => [
+                ['id' => 'jne',           'name' => 'JNE',               'code' => 'jne',           'logo_url' => $base.'jne'.$suffix,          'services' => [['code' => 'REG', 'name' => 'JNE Regular', 'type' => 'regular'], ['code' => 'YES', 'name' => 'JNE YES', 'type' => 'express'], ['code' => 'OKE', 'name' => 'JNE OKE', 'type' => 'regular']]],
+                ['id' => 'jnt',           'name' => 'J&T Express',       'code' => 'jnt',           'logo_url' => $base.'jnt'.$suffix,          'services' => [['code' => 'EZ', 'name' => 'J&T EZ', 'type' => 'regular']]],
+                ['id' => 'sicepat',       'name' => 'SiCepat',           'code' => 'sicepat',       'logo_url' => $base.'sicepat'.$suffix,      'services' => [['code' => 'BEST', 'name' => 'SiCepat BEST', 'type' => 'regular'], ['code' => 'GOKIL', 'name' => 'SiCepat Gokil', 'type' => 'regular']]],
+                ['id' => 'tiki',          'name' => 'TIKI',              'code' => 'tiki',          'logo_url' => $base.'tiki'.$suffix,         'services' => [['code' => 'REG', 'name' => 'TIKI Regular', 'type' => 'regular'], ['code' => 'ONS', 'name' => 'TIKI ONS', 'type' => 'express']]],
+                ['id' => 'ninja_xpress',  'name' => 'Ninja Xpress',      'code' => 'ninja_xpress',  'logo_url' => $base.'ninja'.$suffix,        'services' => [['code' => 'STD', 'name' => 'Ninja Standard', 'type' => 'regular']]],
+                ['id' => 'id_express',    'name' => 'ID Express',        'code' => 'id_express',    'logo_url' => $base.'idexpress'.$suffix,    'services' => [['code' => 'STD', 'name' => 'ID Express Standard', 'type' => 'regular']]],
+                ['id' => 'anteraja',      'name' => 'Anteraja',          'code' => 'anteraja',      'logo_url' => $base.'anteraja'.$suffix,     'services' => [['code' => 'ND', 'name' => 'Anteraja Next Day', 'type' => 'express'], ['code' => '1D', 'name' => 'Anteraja 1 Day', 'type' => 'express']]],
+                ['id' => 'grab',          'name' => 'Grab',              'code' => 'grab',          'logo_url' => $base.'grab'.$suffix,         'services' => [['code' => 'instant', 'name' => 'Grab Instant', 'type' => 'instant'], ['code' => 'same_day', 'name' => 'Grab Same Day', 'type' => 'same_day']]],
+                ['id' => 'gojek',         'name' => 'GoSend',            'code' => 'gojek',         'logo_url' => $base.'gojek'.$suffix,        'services' => [['code' => 'instant', 'name' => 'GoSend Instant', 'type' => 'instant'], ['code' => 'same_day', 'name' => 'GoSend Same Day', 'type' => 'same_day']]],
+                ['id' => 'sap',           'name' => 'SAP Express',       'code' => 'sap',           'logo_url' => $base.'sap'.$suffix,          'services' => [['code' => 'SDS', 'name' => 'SAP Regular', 'type' => 'regular']]],
+                ['id' => 'jdl',           'name' => 'JDL Express',       'code' => 'jdl',           'logo_url' => $base.'jdl'.$suffix,          'services' => [['code' => 'ECS', 'name' => 'JDL Express', 'type' => 'regular']]],
+                ['id' => 'paxel',         'name' => 'Paxel',             'code' => 'paxel',         'logo_url' => $base.'paxel'.$suffix,        'services' => [['code' => 'sameday', 'name' => 'Paxel Same Day', 'type' => 'same_day']]],
+                ['id' => 'deliveree',     'name' => 'Deliveree',         'code' => 'deliveree',     'logo_url' => $base.'deliveree'.$suffix,    'services' => [['code' => 'ltl', 'name' => 'Deliveree LTL', 'type' => 'trucking']]],
+                ['id' => 'lion_parcel',   'name' => 'Lion Parcel',       'code' => 'lion_parcel',   'logo_url' => $base.'lion'.$suffix,         'services' => [['code' => 'REG', 'name' => 'Lion Regular', 'type' => 'regular'], ['code' => 'ONTE', 'name' => 'Lion One Day', 'type' => 'express']]],
+                ['id' => 'rpx',           'name' => 'RPX',               'code' => 'rpx',           'logo_url' => $base.'rpx'.$suffix,          'services' => [['code' => 'RGP', 'name' => 'RPX Regular', 'type' => 'regular']]],
+                ['id' => 'wahana',        'name' => 'Wahana',            'code' => 'wahana',        'logo_url' => $base.'wahana'.$suffix,       'services' => [['code' => 'WAH', 'name' => 'Wahana Regular', 'type' => 'regular']]],
+                ['id' => 'pos_indonesia', 'name' => 'Pos Indonesia',     'code' => 'pos_indonesia', 'logo_url' => $base.'pos'.$suffix,          'services' => [['code' => 'Pos Reguler', 'name' => 'Pos Reguler', 'type' => 'regular']]],
+                ['id' => 'lalamove',      'name' => 'Lalamove',          'code' => 'lalamove',      'logo_url' => $base.'lalamove'.$suffix,     'services' => [['code' => 'MOTORCYCLE', 'name' => 'Lalamove Motor', 'type' => 'instant']]],
+                ['id' => 'rara',          'name' => 'RARA Delivery',     'code' => 'rara',          'logo_url' => $base.'rara'.$suffix,         'services' => [['code' => 'same_day', 'name' => 'RARA Same Day', 'type' => 'same_day']]],
+                ['id' => 'dhl',           'name' => 'DHL',               'code' => 'dhl',           'logo_url' => $base.'dhl'.$suffix,          'services' => [['code' => 'PDO', 'name' => 'DHL Domestic', 'type' => 'regular']]],
+                ['id' => 'tlx',           'name' => 'TLX',               'code' => 'tlx',           'logo_url' => $base.'tlx'.$suffix,          'services' => [['code' => 'STD', 'name' => 'TLX Standard', 'type' => 'regular']]],
+                ['id' => 'fedex',         'name' => 'FedEx',             'code' => 'fedex',         'logo_url' => $base.'fedex'.$suffix,        'services' => [['code' => 'IP', 'name' => 'FedEx International Priority', 'type' => 'express']]],
+                ['id' => 'jet',           'name' => 'JET Express',       'code' => 'jet',           'logo_url' => $base.'jet'.$suffix,          'services' => [['code' => 'REG', 'name' => 'JET Regular', 'type' => 'regular']]],
+                ['id' => 'alfatrex',      'name' => 'Alfatrex',          'code' => 'alfatrex',      'logo_url' => $base.'alfatrex'.$suffix,     'services' => [['code' => 'STD', 'name' => 'Alfatrex Standard', 'type' => 'regular']]],
+                ['id' => 'borzo',         'name' => 'Borzo',             'code' => 'borzo',         'logo_url' => $base.'borzo'.$suffix,        'services' => [['code' => 'instant', 'name' => 'Borzo Instant', 'type' => 'instant']]],
+                ['id' => 'mrspeedy',      'name' => 'Borzo (mrSpeedy)',   'code' => 'mrspeedy',      'logo_url' => $base.'mrspeedy'.$suffix,     'services' => [['code' => 'instant', 'name' => 'mrSpeedy Instant', 'type' => 'instant']]],
+                ['id' => 'sentral_cargo', 'name' => 'Sentral Cargo',     'code' => 'sentral_cargo', 'logo_url' => $base.'sentralcargo'.$suffix, 'services' => [['code' => 'REG', 'name' => 'Sentral Cargo Regular', 'type' => 'regular']]],
+                ['id' => 'insan_kargo',   'name' => 'Insan Kargo',       'code' => 'insan_kargo',   'logo_url' => $base.'insankargo'.$suffix,   'services' => [['code' => 'REG', 'name' => 'Insan Kargo Regular', 'type' => 'regular']]],
+            ],
+        ];
+    }
+
+    private function mockAreasResponse(array $query): array
+    {
+        $input = $query['input'] ?? '';
+
+        return [
+            'success' => true,
+            'areas' => $input !== '' ? [
+                [
+                    'id' => 'IDNP6IDNC148MOCK',
+                    'name' => $input.' (Mock)',
+                    'description' => "{$input} (Mock), DKI Jakarta",
+                    'country' => 'ID',
+                    'province' => 'DKI Jakarta',
+                    'city' => $input,
+                    'type' => $query['type'] ?? 'single',
+                    'postal_codes' => ['12000'],
+                ],
+            ] : [],
         ];
     }
 
@@ -298,7 +398,8 @@ class MockBiteshipClient implements BiteshipClientInterface
     private function extractOrderIdFromUri(string $uri): ?string
     {
         // Extract order ID from /v1/orders/{orderId} or /v1/orders/{orderId}/cancel
-        if (preg_match('/orders\/([A-Z0-9\-]+)/', $uri, $matches)) {
+        // Case-insensitive to handle any casing in order IDs
+        if (preg_match('/orders\/([A-Za-z0-9\-]+)/i', $uri, $matches)) {
             return $matches[1];
         }
 
