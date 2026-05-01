@@ -1,0 +1,32 @@
+{
+  "id": "ORD-123456",
+  "status": "delivered",
+  "history": [
+    {
+      "status": "confirmed",
+      "updated_at": "2026-05-01T10:00:00Z",
+      "note": "Order dikonfirmasi"
+    },
+    {
+      "status": "picked",
+      "updated_at": "2026-05-01T14:00:00Z",
+      "note": "Paket diambil oleh kurir"
+    },
+    {
+      "status": "dropping_off",
+      "updated_at": "2026-05-02T09:00:00Z",
+      "note": "Paket dalam perjalanan"
+    },
+    {
+      "status": "delivered",
+      "updated_at": "2026-05-02T15:00:00Z",
+      "note": "Paket telah diterima"
+    }
+  ],
+  "courier": {
+    "company": "JNE",
+    "type": "REG",
+    "waybill_id": "JNE00123456789",
+    "tracking_id": "JP1234567890"
+  }
+}

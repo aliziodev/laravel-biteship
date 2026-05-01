@@ -1,0 +1,10 @@
+{
+    "event": "order.waybill_id",
+    "order_id": "ORD-123456",
+    "courier": {
+        "company": "jne",
+        "type": "REG",
+        "tracking_id": "TRK-789",
+        "waybill_id": "JNE00123456789"
+    }
+}

@@ -1,0 +1,41 @@
+{
+    "success": true,
+    "message": "Order created successfully",
+    "id": "ORD-123456",
+    "reference_id": "my-order-001",
+    "status": "confirmed",
+    "price": 18000,
+    "insurance": {
+        "fee": 500
+    },
+    "courier": {
+        "company": "jne",
+        "type": "REG",
+        "tracking_id": null,
+        "waybill_id": null
+    },
+    "origin": {
+        "contact_name": "Ali Sender",
+        "contact_phone": "08123456789",
+        "address": "Jl. Sudirman No.1, Jakarta Pusat"
+    },
+    "destination": {
+        "contact_name": "Ani Recipient",
+        "contact_phone": "08987654321",
+        "address": "Jl. Merdeka No.10, Bandung",
+        "cash_on_delivery": 0,
+        "cash_on_delivery_fee": 0
+    },
+    "items": [
+        {
+            "name": "Sepatu Olahraga",
+            "description": "Ukuran 42",
+            "value": 250000,
+            "weight": 800,
+            "quantity": 1,
+            "length": 30,
+            "width": 20,
+            "height": 15
+        }
+    ]
+}

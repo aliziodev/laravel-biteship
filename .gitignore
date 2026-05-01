@@ -1,0 +1,47 @@
+# Composer
+/vendor/
+composer.lock
+composer.phar
+
+# PHPUnit / Testing
+.phpunit.result.cache
+.phpunit.cache/
+coverage.xml
+*.clover
+
+# IDE & Editor
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment
+.env
+.env.backup
+.env.local
+.env.*.local
+
+# Laravel / Storage
+storage/*.key
+storage/app/public/
+storage/framework/cache/data/
+storage/framework/sessions/
+storage/framework/testing/
+storage/framework/views/
+storage/logs/
+
+# Build & Cache
+dist/
+build/
+*.cache
+node_modules/
+
+# Documentation Generated Files
+.phpdoc/
+phpunit.html
+plan.md
+
+# OS Generated
+Thumbs.db

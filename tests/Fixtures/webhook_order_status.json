@@ -1,0 +1,11 @@
+{
+    "event": "order.status",
+    "order_id": "ORD-123456",
+    "status": "picked",
+    "courier": {
+        "company": "jne",
+        "type": "REG",
+        "tracking_id": "TRK-789",
+        "waybill_id": null
+    }
+}

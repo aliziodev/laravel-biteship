@@ -1,0 +1,35 @@
+{
+  "success": true,
+  "areas": [
+    {
+      "id": "IDNP6IDNC1481234567890",
+      "name": "Jakarta Selatan",
+      "description": "Jakarta Selatan, DKI Jakarta",
+      "country": "ID",
+      "province": "DKI Jakarta",
+      "city": "Jakarta Selatan",
+      "type": "single",
+      "postal_codes": ["12000", "12110", "12210"]
+    },
+    {
+      "id": "IDNP6IDNC1491234567890",
+      "name": "Jakarta Pusat",
+      "description": "Jakarta Pusat, DKI Jakarta",
+      "country": "ID",
+      "province": "DKI Jakarta",
+      "city": "Jakarta Pusat",
+      "type": "single",
+      "postal_codes": ["10110", "10210", "10310"]
+    },
+    {
+      "id": "IDNP6IDNC1501234567890",
+      "name": "Jakarta Barat",
+      "description": "Jakarta Barat, DKI Jakarta",
+      "country": "ID",
+      "province": "DKI Jakarta",
+      "city": "Jakarta Barat",
+      "type": "single",
+      "postal_codes": ["11010", "11110", "11210"]
+    }
+  ]
+}

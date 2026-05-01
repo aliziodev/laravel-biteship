@@ -1,0 +1,59 @@
+{
+  "success": true,
+  "couriers": [
+    {
+      "id": "jne",
+      "name": "JNE",
+      "code": "jne",
+      "logo_url": "https://biteship.com/img/couriers/jne.png",
+      "services": [
+        {
+          "code": "REG",
+          "name": "JNE Regular",
+          "description": "Layanan reguler JNE",
+          "type": "regular"
+        },
+        {
+          "code": "YES",
+          "name": "JNE YES",
+          "description": "Layanan same day JNE",
+          "type": "express"
+        }
+      ]
+    },
+    {
+      "id": "sicepat",
+      "name": "SiCepat",
+      "code": "sicepat",
+      "logo_url": "https://biteship.com/img/couriers/sicepat.png",
+      "services": [
+        {
+          "code": "REG",
+          "name": "SiCepat Regular",
+          "description": "Layanan reguler SiCepat",
+          "type": "regular"
+        },
+        {
+          "code": "BEST",
+          "name": "SiCepat BEST",
+          "description": "Layanan express SiCepat",
+          "type": "express"
+        }
+      ]
+    },
+    {
+      "id": "jnt",
+      "name": "J&T",
+      "code": "jnt",
+      "logo_url": "https://biteship.com/img/couriers/jnt.png",
+      "services": [
+        {
+          "code": "EZ",
+          "name": "J&T Regular",
+          "description": "Layanan reguler J&T",
+          "type": "regular"
+        }
+      ]
+    }
+  ]
+}
