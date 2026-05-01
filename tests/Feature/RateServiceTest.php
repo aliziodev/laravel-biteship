@@ -44,7 +44,7 @@ test('cheapest returns lowest price courier', function () {
     $cheapest = $response->cheapest();
 
     expect($cheapest->price)->toBe(12000)
-        ->and($cheapest->courierCode)->toBe('sicepat');
+        ->and($cheapest->courier_code)->toBe('sicepat');
 });
 
 test('byCourier filters correctly', function () {

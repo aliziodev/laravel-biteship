@@ -10,6 +10,8 @@ class RateResponse
     public function __construct(
         public readonly bool $success,
         public readonly string $message,
+        public readonly array $origin,
+        public readonly array $destination,
         public readonly Collection $pricing,
     ) {}
 
@@ -21,6 +23,8 @@ class RateResponse
         return new static(
             success: $data['success'] ?? false,
             message: $data['message'] ?? '',
+            origin: $data['origin'] ?? [],
+            destination: $data['destination'] ?? [],
             pricing: $pricing,
         );
     }
@@ -32,10 +36,10 @@ class RateResponse
     }
 
     /** Filter berdasarkan kode kurir, misal 'jne', 'sicepat'. */
-    public function byCourier(string $courierCode): Collection
+    public function byCourier(string $courier_code): Collection
     {
         return $this->pricing->filter(
-            fn (CourierRate $r) => $r->courierCode === $courierCode
+            fn (CourierRate $r) => $r->courier_code === $courier_code
         )->values();
     }
 
@@ -43,7 +47,7 @@ class RateResponse
     public function codAvailable(): Collection
     {
         return $this->pricing->filter(
-            fn (CourierRate $r) => $r->codAvailable
+            fn (CourierRate $r) => $r->cod_available
         )->values();
     }
 

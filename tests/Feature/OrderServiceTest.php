@@ -33,7 +33,7 @@ test('create returns OrderResponse with correct data', function () {
     expect($response)->toBeInstanceOf(OrderResponse::class)
         ->and($response->id)->toBe('ORD-123456')
         ->and($response->status)->toBe(OrderStatus::Confirmed)
-        ->and($response->courierCompany)->toBe('jne')
+        ->and($response->courier_company)->toBe('jne')
         ->and($response->price)->toBe(18000);
 });
 

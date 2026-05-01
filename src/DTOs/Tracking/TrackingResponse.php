@@ -9,10 +9,10 @@ class TrackingResponse
 {
     /** @param Collection<int, TrackingHistory> $history */
     public function __construct(
-        public readonly string $orderId,
-        public readonly ?string $waybillId,
-        public readonly string $courierCompany,
-        public readonly string $courierType,
+        public readonly string $order_id,
+        public readonly ?string $waybill_id,
+        public readonly string $courier_company,
+        public readonly string $courier_type,
         public readonly TrackingStatus $status,
         public readonly Collection $history,
     ) {}
@@ -23,10 +23,10 @@ class TrackingResponse
             ->map(fn (array $h) => TrackingHistory::fromArray($h));
 
         return new static(
-            orderId: $data['id'] ?? '',
-            waybillId: $data['courier']['waybill_id'] ?? null,
-            courierCompany: $data['courier']['company'] ?? '',
-            courierType: $data['courier']['type'] ?? '',
+            order_id: $data['id'] ?? '',
+            waybill_id: $data['courier']['waybill_id'] ?? null,
+            courier_company: $data['courier']['company'] ?? '',
+            courier_type: $data['courier']['type'] ?? '',
             status: TrackingStatus::tryFrom($data['status'] ?? '') ?? TrackingStatus::Confirmed,
             history: $history,
         );

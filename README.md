@@ -111,7 +111,7 @@ $response = Biteship::rates()->check($request);
 
 // $response->pricing → Collection<CourierRate>
 foreach ($response->pricing as $rate) {
-    // $rate->courierName, $rate->courierCode, $rate->price, $rate->etd
+    // $rate->courier_name, $rate->courier_code, $rate->price, $rate->etd
 }
 ```
 
@@ -179,7 +179,7 @@ $response = Biteship::orders()->create($request);
 
 // $response->id              → Biteship order ID
 // $response->status          → OrderStatus enum
-// $response->waybillId       → resi kurir (mungkin null saat baru dibuat)
+// $response->waybill_id       → resi kurir (mungkin null saat baru dibuat)
 // $response->price           → ongkir final
 // $response->raw             → raw array dari API
 ```
@@ -228,7 +228,7 @@ $tracking = Biteship::tracking()->trackByOrderId($orderId);
 $tracking = Biteship::tracking()->trackByWaybill('JD000000000', 'jne');
 
 // $tracking->status     → TrackingStatus enum
-// $tracking->waybillId
+// $tracking->waybill_id
 // $tracking->history    → Collection<TrackingHistory>
 
 foreach ($tracking->history as $h) {
@@ -277,7 +277,7 @@ $html = Biteship::label()->render($label);
 return Biteship::label()->response($label);
 ```
 
-**Catatan:** `senderName` dan `senderPhone` di label menggunakan data `shipper` (branding toko) jika tersedia, dengan fallback ke `origin`. `senderAddress` selalu dari `origin`.
+**Catatan:** `sender_name` dan `sender_phone` di label menggunakan data `shipper` (branding toko) jika tersedia, dengan fallback ke `origin`. `sender_address` selalu dari `origin`.
 
 ---
 
@@ -328,10 +328,10 @@ public function handle(OrderStatusUpdated $event): void
 {
     $payload = $event->payload;
 
-    $payload->orderId;            // string
+    $payload->order_id;            // string
     $payload->status;             // OrderStatus enum
-    $payload->waybillId;          // ?string
-    $payload->courierTrackingId;  // ?string
+    $payload->waybill_id;          // ?string
+    $payload->courier_tracking_id;  // ?string
     $payload->raw;                // array mentah dari webhook
 }
 ```
@@ -342,9 +342,9 @@ public function handle(OrderWaybillUpdated $event): void
 {
     $payload = $event->payload;
 
-    $payload->orderId;            // string
-    $payload->waybillId;          // string
-    $payload->courierTrackingId;  // ?string
+    $payload->order_id;            // string
+    $payload->waybill_id;          // string
+    $payload->courier_tracking_id;  // ?string
 }
 ```
 
@@ -354,9 +354,9 @@ public function handle(OrderPriceUpdated $event): void
 {
     $payload = $event->payload;
 
-    $payload->orderId;            // string
+    $payload->order_id;            // string
     $payload->price;              // int (rupiah)
-    $payload->insuranceFee;       // int (rupiah)
+    $payload->insurance_fee;       // int (rupiah)
 }
 ```
 
@@ -416,7 +416,7 @@ class HandleBiteshipStatus
 {
     public function handle(OrderStatusUpdated $event): void
     {
-        BiteshipOrder::where('biteship_order_id', $event->payload->orderId)
+        BiteshipOrder::where('biteship_order_id', $event->payload->order_id)
             ->update(['biteship_status' => $event->payload->status->value]);
     }
 }
@@ -430,7 +430,7 @@ class HandleBiteshipStatus
     public function handle(OrderStatusUpdated $event): void
     {
         $order = Order::whereHas('biteshipOrder', fn ($q) =>
-            $q->where('biteship_order_id', $event->payload->orderId)
+            $q->where('biteship_order_id', $event->payload->order_id)
         )->first();
 
         $order?->syncBiteshipStatus();

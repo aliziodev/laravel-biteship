@@ -5,37 +5,37 @@ namespace Aliziodev\Biteship\DTOs\Rate;
 class CourierRate
 {
     public function __construct(
-        public readonly string $courierName,
-        public readonly string $courierCode,
-        public readonly string $courierServiceName,
-        public readonly string $courierServiceCode,
+        public readonly string $courier_name,
+        public readonly string $courier_code,
+        public readonly string $courier_service_name,
+        public readonly string $courier_service_code,
         public readonly string $type,           // 'regular', 'express', 'trucking', 'instant'
         public readonly string $description,
-        public readonly int $duration,        // estimasi hari
-        public readonly string $shipmentDuration,
+        public readonly string $duration,     // estimasi hari (contoh: "6 - 7 days")
+        public readonly string $shipment_duration,
         public readonly int $price,           // ongkir dalam rupiah
-        public readonly ?int $insuranceRate,
-        public readonly bool $codAvailable,
-        public readonly ?float $codFeePercent,
-        public readonly ?int $codFeeFlat,
+        public readonly bool $insurance_available,
+        public readonly ?int $insurance_fee,
+        public readonly bool $cod_available,
+        public readonly ?int $cod_fee,
     ) {}
 
     public static function fromArray(array $data): static
     {
         return new static(
-            courierName: $data['courier_name'] ?? '',
-            courierCode: $data['courier_code'] ?? '',
-            courierServiceName: $data['courier_service_name'] ?? '',
-            courierServiceCode: $data['courier_service_code'] ?? '',
+            courier_name: $data['courier_name'] ?? '',
+            courier_code: $data['courier_code'] ?? '',
+            courier_service_name: $data['courier_service_name'] ?? '',
+            courier_service_code: $data['courier_service_code'] ?? '',
             type: $data['type'] ?? '',
             description: $data['description'] ?? '',
-            duration: (int) ($data['duration'] ?? 0),
-            shipmentDuration: $data['shipment_duration_range'] ?? '',
+            duration: $data['duration'] ?? '',
+            shipment_duration: $data['shipment_duration_range'] ?? '',
             price: (int) ($data['price'] ?? 0),
-            insuranceRate: isset($data['insurance_rate']) ? (int) $data['insurance_rate'] : null,
-            codAvailable: (bool) ($data['available_for_cash_on_delivery'] ?? false),
-            codFeePercent: isset($data['available_for_cash_on_delivery_fee_percent']) ? (float) $data['available_for_cash_on_delivery_fee_percent'] : null,
-            codFeeFlat: isset($data['available_for_cash_on_delivery_fee_flat']) ? (int) $data['available_for_cash_on_delivery_fee_flat'] : null,
+            insurance_available: (bool) ($data['available_for_insurance'] ?? false),
+            insurance_fee: isset($data['insurance_fee']) ? (int) $data['insurance_fee'] : null,
+            cod_available: (bool) ($data['available_for_cash_on_delivery'] ?? false),
+            cod_fee: isset($data['cash_on_delivery_fee']) ? (int) $data['cash_on_delivery_fee'] : null,
         );
     }
 }

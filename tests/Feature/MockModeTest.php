@@ -30,7 +30,7 @@ test('mock mode returns dynamic rates response', function () {
     $firstRate = $response->pricing->first();
 
     expect($response->pricing)->toHaveCount(3)
-        ->and($firstRate->courierCode)->toBeIn(['jne', 'sicepat', 'jnt'])
+        ->and($firstRate->courier_code)->toBeIn(['jne', 'sicepat', 'jnt'])
         ->and($firstRate->price)->toBeInt()->toBeGreaterThan(0);
 });
 
@@ -91,7 +91,7 @@ test('mock mode creates order with dynamic id', function () {
     expect($response->id)->toStartWith('ORD-')
         ->and($response->status->value)->toBe('confirmed')
         ->and($response->price)->toBeInt()->toBeGreaterThan(0)
-        ->and($response->referenceId)->toBe('ORDER-INTERNAL-123');
+        ->and($response->reference_id)->toBe('ORDER-INTERNAL-123');
 });
 
 test('mock order can be retrieved after creation', function () {
@@ -209,7 +209,7 @@ test('mock mode supports COD orders', function () {
     $response = Biteship::orders()->create($orderRequest);
 
     // COD fee is calculated as 5000 if COD > 0
-    expect($response->codFee)->toBe(5000);
+    expect($response->cod_fee)->toBe(5000);
 });
 
 test('mock mode generates unique order ids', function () {

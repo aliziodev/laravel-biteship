@@ -5,21 +5,21 @@ namespace Aliziodev\Biteship\DTOs\Webhook;
 class OrderWaybillPayload extends WebhookPayload
 {
     public function __construct(
-        string $orderId,
+        string $order_id,
         array $raw,
-        public readonly string $waybillId,
-        public readonly ?string $courierTrackingId,
+        public readonly string $waybill_id,
+        public readonly ?string $courier_tracking_id,
     ) {
-        parent::__construct('order.waybill_id', $orderId, $raw);
+        parent::__construct('order.waybill_id', $order_id, $raw);
     }
 
     public static function fromArray(array $data): static
     {
         return new static(
-            orderId: $data['order_id'] ?? $data['id'] ?? '',
+            order_id: $data['order_id'] ?? $data['id'] ?? '',
             raw: $data,
-            waybillId: $data['courier']['waybill_id'] ?? '',
-            courierTrackingId: $data['courier']['tracking_id'] ?? null,
+            waybill_id: $data['courier']['waybill_id'] ?? '',
+            courier_tracking_id: $data['courier']['tracking_id'] ?? null,
         );
     }
 }

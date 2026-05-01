@@ -8,18 +8,18 @@ class TrackingHistory
 {
     public function __construct(
         public readonly string $note,
-        public readonly string $serviceType,
+        public readonly string $service_type,
         public readonly string $status,
-        public readonly Carbon $updatedAt,
+        public readonly Carbon $updated_at,
     ) {}
 
     public static function fromArray(array $data): static
     {
         return new static(
             note: $data['note'] ?? '',
-            serviceType: $data['service_type'] ?? '',
+            service_type: $data['service_type'] ?? '',
             status: $data['status'] ?? '',
-            updatedAt: Carbon::parse($data['updated_at']),
+            updated_at: Carbon::parse($data['updated_at']),
         );
     }
 }

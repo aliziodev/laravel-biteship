@@ -20,7 +20,7 @@ test('valid order.status webhook dispatches OrderStatusUpdated', function () {
         ->assertJson(['received' => true]);
 
     Event::assertDispatched(OrderStatusUpdated::class, function ($event) {
-        return $event->payload->orderId === 'ORD-123456';
+        return $event->payload->order_id === 'ORD-123456';
     });
 });
 
@@ -31,7 +31,7 @@ test('valid order.waybill_id webhook dispatches OrderWaybillUpdated', function (
         ->assertOk();
 
     Event::assertDispatched(OrderWaybillUpdated::class, function ($event) {
-        return $event->payload->waybillId === 'JNE00123456789';
+        return $event->payload->waybill_id === 'JNE00123456789';
     });
 });
 

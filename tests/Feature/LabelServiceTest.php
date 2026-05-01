@@ -30,12 +30,12 @@ test('fromRaw creates Label DTO from order response', function () {
     $label = Biteship::label()->fromRaw($rawOrder);
 
     expect($label)->toBeInstanceOf(Label::class)
-        ->and($label->courierName)->toBe('JNE')
-        ->and($label->waybillId)->toBe('JNE00123456789')
-        ->and($label->senderName)->toBe('Toko Elektronik')
-        ->and($label->recipientName)->toBe('Budi Santoso')
-        ->and($label->recipientPhone)->toBe('08123456789')
-        ->and($label->codAmount)->toBe(500000);
+        ->and($label->courier_name)->toBe('JNE')
+        ->and($label->waybill_id)->toBe('JNE00123456789')
+        ->and($label->sender_name)->toBe('Toko Elektronik')
+        ->and($label->recipient_name)->toBe('Budi Santoso')
+        ->and($label->recipient_phone)->toBe('08123456789')
+        ->and($label->cod_amount)->toBe(500000);
 });
 
 test('render returns HTML string', function () {
@@ -122,5 +122,5 @@ test('label contains total weight calculation', function () {
 
     $label = Biteship::label()->fromRaw($rawOrder);
 
-    expect($label->totalWeight)->toBe(2400); // 2000 + (200 * 2)
+    expect($label->total_weight)->toBe(2400); // 2000 + (200 * 2)
 });

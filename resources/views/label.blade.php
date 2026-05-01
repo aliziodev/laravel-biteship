@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Label Pengiriman — {{ $label->waybillId ?? 'N/A' }}</title>
+    <title>Label Pengiriman — {{ $label->waybill_id ?? 'N/A' }}</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -165,17 +165,17 @@
 
     {{-- Header: Nama Kurir --}}
     <div class="label-header">
-        <div class="courier-name">{{ strtoupper($label->courierName) }}</div>
-        <div class="courier-type">{{ strtoupper($label->courierType) }}</div>
+        <div class="courier-name">{{ strtoupper($label->courier_name) }}</div>
+        <div class="courier-type">{{ strtoupper($label->courier_type) }}</div>
     </div>
 
     {{-- Nomor Resi / Waybill --}}
     <div class="waybill-section">
         <div class="waybill-label">No. Resi</div>
-        <div class="waybill-number">{{ $label->waybillId ?? 'Menunggu Pickup' }}</div>
+        <div class="waybill-number">{{ $label->waybill_id ?? 'Menunggu Pickup' }}</div>
 
         @if($label->isCod())
-            <span class="cod-badge">COD — Rp {{ number_format($label->codAmount, 0, ',', '.') }}</span>
+            <span class="cod-badge">COD — Rp {{ number_format($label->cod_amount, 0, ',', '.') }}</span>
         @endif
     </div>
 
@@ -183,9 +183,9 @@
     <div class="address-section recipient">
         <div class="address-block">
             <div class="address-label">Penerima</div>
-            <div class="address-name">{{ $label->recipientName }}</div>
-            <div class="address-phone">{{ $label->recipientPhone }}</div>
-            <div class="address-detail">{{ $label->recipientAddress }}</div>
+            <div class="address-name">{{ $label->recipient_name }}</div>
+            <div class="address-phone">{{ $label->recipient_phone }}</div>
+            <div class="address-detail">{{ $label->recipient_address }}</div>
         </div>
     </div>
 
@@ -193,9 +193,9 @@
     <div class="address-section">
         <div class="address-block">
             <div class="address-label">Pengirim</div>
-            <div class="address-name">{{ $label->senderName }}</div>
-            <div class="address-phone">{{ $label->senderPhone }}</div>
-            <div class="address-detail">{{ $label->senderAddress }}</div>
+            <div class="address-name">{{ $label->sender_name }}</div>
+            <div class="address-phone">{{ $label->sender_phone }}</div>
+            <div class="address-detail">{{ $label->sender_address }}</div>
         </div>
     </div>
 
@@ -214,9 +214,9 @@
 
     {{-- Footer --}}
     <div class="label-footer">
-        <span>Total Berat: {{ number_format($label->totalWeight) }}g</span>
-        @if($label->trackingId)
-            <span>Tracking: {{ $label->trackingId }}</span>
+        <span>Total Berat: {{ number_format($label->total_weight) }}g</span>
+        @if($label->tracking_id)
+            <span>Tracking: {{ $label->tracking_id }}</span>
         @endif
     </div>
 

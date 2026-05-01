@@ -53,6 +53,6 @@ test('tracking contains courier information', function () {
 
     $tracking = Biteship::tracking()->trackByOrderId('ORD-123456');
 
-    expect($tracking->courierCompany)->toBe('JNE')
-        ->and($tracking->waybillId)->toBe('JNE00123456789');
+    expect($tracking->courier_company)->toBe('JNE')
+        ->and($tracking->waybill_id)->toBe('JNE00123456789');
 });

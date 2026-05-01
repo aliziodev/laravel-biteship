@@ -5,21 +5,21 @@ namespace Aliziodev\Biteship\DTOs\Webhook;
 class OrderPricePayload extends WebhookPayload
 {
     public function __construct(
-        string $orderId,
+        string $order_id,
         array $raw,
         public readonly int $price,
-        public readonly int $insuranceFee,
+        public readonly int $insurance_fee,
     ) {
-        parent::__construct('order.price', $orderId, $raw);
+        parent::__construct('order.price', $order_id, $raw);
     }
 
     public static function fromArray(array $data): static
     {
         return new static(
-            orderId: $data['order_id'] ?? $data['id'] ?? '',
+            order_id: $data['order_id'] ?? $data['id'] ?? '',
             raw: $data,
             price: $data['price'] ?? 0,
-            insuranceFee: $data['insurance']['fee'] ?? 0,
+            insurance_fee: $data['insurance']['fee'] ?? 0,
         );
     }
 }
