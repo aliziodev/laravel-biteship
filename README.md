@@ -3,7 +3,6 @@
 <p align="center">
   <!-- Baris 1 -->
   <a href="https://github.com/aliziodev/laravel-biteship/actions"><img src="https://github.com/aliziodev/laravel-biteship/workflows/Tests/badge.svg" alt="Tests"></a>
-  <a href="https://github.com/aliziodev/laravel-biteship/actions"><img src="https://github.com/aliziodev/laravel-biteship/workflows/Code%20Quality/badge.svg" alt="Code Quality"></a>
   <a href="https://packagist.org/packages/aliziodev/laravel-biteship"><img src="https://img.shields.io/packagist/v/aliziodev/laravel-biteship.svg" alt="Latest Version on Packagist"></a>
   <a href="https://packagist.org/packages/aliziodev/laravel-biteship"><img src="https://img.shields.io/packagist/dt/aliziodev/laravel-biteship.svg" alt="Total Downloads"></a>
 </br>
