@@ -1,3 +1,12 @@
+# [1.1.0](https://github.com/aliziodev/laravel-biteship/compare/v1.0.1...v1.1.0) (2026-05-01)
+
+
+### Features
+
+* add installation command and DTOs for shipment rates and label management ([8421fff](https://github.com/aliziodev/laravel-biteship/commit/8421fff17da6f919339c88bc8bbfd33fa1d32e2a))
+* implement base Biteship integration with DTOs, configuration, install command, and mock client ([8b514db](https://github.com/aliziodev/laravel-biteship/commit/8b514db1876b6755740df00c62c8ccb6f49414b8))
+* implement MockBiteshipClient for testing and add TrackingResponse DTO ([3b9e9e9](https://github.com/aliziodev/laravel-biteship/commit/3b9e9e925e52244b8987533b7464a1da51298de3))
+
 ## [1.0.1](https://github.com/aliziodev/laravel-biteship/compare/v1.0.0...v1.0.1) (2026-05-01)
 
 
