@@ -29,13 +29,13 @@ class CourierRate
             courierServiceCode: $data['courier_service_code'] ?? '',
             type: $data['type'] ?? '',
             description: $data['description'] ?? '',
-            duration: $data['duration'] ?? 0,
+            duration: (int) ($data['duration'] ?? 0),
             shipmentDuration: $data['shipment_duration_range'] ?? '',
-            price: $data['price'] ?? 0,
-            insuranceRate: $data['insurance_rate'] ?? null,
-            codAvailable: $data['available_for_cash_on_delivery'] ?? false,
-            codFeePercent: $data['available_for_cash_on_delivery_fee_percent'] ?? null,
-            codFeeFlat: $data['available_for_cash_on_delivery_fee_flat'] ?? null,
+            price: (int) ($data['price'] ?? 0),
+            insuranceRate: isset($data['insurance_rate']) ? (int) $data['insurance_rate'] : null,
+            codAvailable: (bool) ($data['available_for_cash_on_delivery'] ?? false),
+            codFeePercent: isset($data['available_for_cash_on_delivery_fee_percent']) ? (float) $data['available_for_cash_on_delivery_fee_percent'] : null,
+            codFeeFlat: isset($data['available_for_cash_on_delivery_fee_flat']) ? (int) $data['available_for_cash_on_delivery_fee_flat'] : null,
         );
     }
 }

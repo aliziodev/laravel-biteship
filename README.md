@@ -285,6 +285,11 @@ $orderRequest = (new OrderRequest)
     ->destinationAreaId('IDNP20001')...
 ```
 
+> 💡 **Tips:** Pastikan `defaultOrigin()` dan destination menggunakan metode lokasi yang sama:
+> - Jika config pakai `BITESHIP_ORIGIN_AREA_ID` → destination pakai `destinationAreaId()`
+> - Jika config pakai `BITESHIP_ORIGIN_POSTAL_CODE` → destination pakai `destinationPostalCode()`
+> - Mixing methods (area_id + postal_code) akan menyebabkan error dari API Biteship.
+
 ## Penggunaan
 
 ### Cek Ongkir
@@ -315,6 +320,15 @@ $jneRates = $response->byCourier('jne');
 // Ambil hanya kurir yang support COD
 $codRates = $response->codAvailable();
 ```
+
+> ⚠️ **Important:** Origin dan destination harus menggunakan metode lokasi yang **sama**:
+> - ✅ `area_id` + `area_id` (High accuracy - Recommended)
+> - ✅ `postal_code` + `postal_code` (Medium accuracy - Easy implementation)
+> - ✅ `coordinate` + `coordinate` (For instant delivery)
+> - ❌ `area_id` + `postal_code` (Error - inconsistent method)
+> - ❌ `postal_code` + `area_id` (Error - inconsistent method)
+>
+> Jika menggunakan `defaultOrigin()`, pastikan config origin (area_id/postal_code) cocok dengan destination method yang Anda gunakan.
 
 #### Lewati Cache
 

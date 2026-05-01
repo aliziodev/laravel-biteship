@@ -184,10 +184,42 @@ class RateRequest
         return $this;
     }
 
+    /**
+     * Detect which location method is used: area_id, postal_code, or coordinate.
+     */
+    private function getLocationMethod(array $location): ?string
+    {
+        if (isset($location['area_id'])) {
+            return 'area_id';
+        }
+
+        if (isset($location['postal_code'])) {
+            return 'postal_code';
+        }
+
+        if (isset($location['coordinate'])) {
+            return 'coordinate';
+        }
+
+        return null;
+    }
+
     // --- Build ---
 
     public function toArray(): array
     {
+        // Validasi: origin dan destination harus menggunakan metode lokasi yang sama
+        $originMethod = $this->getLocationMethod($this->origin);
+        $destinationMethod = $this->getLocationMethod($this->destination);
+
+        if ($originMethod !== null && $destinationMethod !== null && $originMethod !== $destinationMethod) {
+            throw new \InvalidArgumentException(
+                'Origin and destination must use the same location method. '.
+                "Origin uses '{$originMethod}', but destination uses '{$destinationMethod}'. ".
+                'Use both area_id, both postal_code, or both coordinate.'
+            );
+        }
+
         $payload = [
             'origin_contact_name' => $this->origin['contact_name'] ?? '',
             'origin_contact_phone' => $this->origin['contact_phone'] ?? '',
