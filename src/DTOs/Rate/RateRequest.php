@@ -83,6 +83,10 @@ class RateRequest
             $this->origin['contact_phone'] = $config['contact_phone'];
         }
 
+        if (! empty($config['contact_email'])) {
+            $this->origin['contact_email'] = $config['contact_email'];
+        }
+
         if (! empty($config['address'])) {
             $this->origin['address'] = $config['address'];
         }

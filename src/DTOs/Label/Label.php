@@ -27,13 +27,17 @@ class Label
             $raw['items'] ?? [],
         ));
 
+        // Prefer shipper info for label display (branding), fallback ke origin
+        // Shipper bisa berbeda dari origin — misal toko pakai nama brand,
+        // sementara origin adalah kontak gudang/warehouse.
+        // Address tetap dari origin karena shipper tidak punya address di Biteship API.
         return new static(
             courierName: $raw['courier']['company'] ?? '',
             courierType: $raw['courier']['type'] ?? '',
             waybillId: $raw['courier']['waybill_id'] ?? null,
             trackingId: $raw['courier']['tracking_id'] ?? null,
-            senderName: $raw['origin']['contact_name'] ?? '',
-            senderPhone: $raw['origin']['contact_phone'] ?? '',
+            senderName: $raw['shipper']['contact_name'] ?? $raw['origin']['contact_name'] ?? '',
+            senderPhone: $raw['shipper']['contact_phone'] ?? $raw['origin']['contact_phone'] ?? '',
             senderAddress: $raw['origin']['address'] ?? '',
             recipientName: $raw['destination']['contact_name'] ?? '',
             recipientPhone: $raw['destination']['contact_phone'] ?? '',

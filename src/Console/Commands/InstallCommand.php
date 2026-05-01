@@ -65,6 +65,18 @@ class InstallCommand extends Command
         }
 
         $this->newLine();
+        $this->line('<fg=gray>Optional — default origin (untuk ->defaultOrigin() di RateRequest/OrderRequest):</>');
+        $this->line('  <comment>BITESHIP_ORIGIN_AREA_ID</comment>=IDNP6...   <fg=gray># atau pakai BITESHIP_ORIGIN_POSTAL_CODE</>');
+        $this->line('  <comment>BITESHIP_ORIGIN_CONTACT_NAME</comment>=Nama Pengirim');
+        $this->line('  <comment>BITESHIP_ORIGIN_CONTACT_PHONE</comment>=0812xxxxxxxx');
+        $this->line('  <comment>BITESHIP_ORIGIN_ADDRESS</comment>=Jl. Contoh No. 1');
+        $this->newLine();
+        $this->line('<fg=gray>Optional — default shipper (nama toko/brand yang muncul di label cetak):</>');
+        $this->line('  <comment>BITESHIP_SHIPPER_CONTACT_NAME</comment>=Nama Toko');
+        $this->line('  <comment>BITESHIP_SHIPPER_CONTACT_PHONE</comment>=021xxxxxxx');
+        $this->line('  <comment>BITESHIP_SHIPPER_ORGANIZATION</comment>=PT Nama Perusahaan');
+
+        $this->newLine();
         $this->line('Docs: <href=https://github.com/aliziodev/laravel-biteship>github.com/aliziodev/laravel-biteship</>');
         $this->newLine();
 
