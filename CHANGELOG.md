@@ -1,3 +1,10 @@
+# [1.2.0](https://github.com/aliziodev/laravel-biteship/compare/v1.1.0...v1.2.0) (2026-05-01)
+
+
+### Features
+
+* implement Biteship core services including tracking, rates, webhooks, and associated DTOs with feature test coverage ([aff3fb3](https://github.com/aliziodev/laravel-biteship/commit/aff3fb37065b79dbff32c88760b5de53b0fbf399))
+
 # [1.1.0](https://github.com/aliziodev/laravel-biteship/compare/v1.0.1...v1.1.0) (2026-05-01)
 
 
