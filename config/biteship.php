@@ -155,4 +155,32 @@ return [
         'organization' => env('BITESHIP_SHIPPER_ORGANIZATION'),
     ],
 
+    /*
+     * =========================================================================
+     * 8. KURIR DEFAULT
+     * =========================================================================
+     *
+     * Kurir yang dipakai sebagai default saat membuat order maupun saat
+     * mengecek ongkir — berguna kalau tokomu hanya menggunakan satu kurir
+     * atau sudah ada kurir pilihan yang disepakati.
+     *
+     * Untuk Orders (->defaultCourier()):
+     *   company  → kode kurir, misal: 'jne', 'sicepat', 'jnt'
+     *   type     → tipe layanan, misal: 'reg', 'yes', 'oke'
+     *   insurance → 'true' untuk aktifkan asuransi, null untuk skip
+     *
+     * Untuk Rates (->defaultCourier()):
+     *   filter   → CSV kode kurir yang mau dicek ongkirnya, misal: 'jne,sicepat,jnt'
+     *              Kosongkan untuk cek semua kurir aktif di akun Biteship.
+     *
+     * Kalau 'filter' kosong tapi 'company' diisi, defaultCourier() di RateRequest
+     * akan pakai 'company' sebagai filter (cek ongkir satu kurir saja).
+     */
+    'default_courier' => [
+        'company' => env('BITESHIP_COURIER_COMPANY'),    // untuk order
+        'type' => env('BITESHIP_COURIER_TYPE'),        // untuk order
+        'insurance' => env('BITESHIP_COURIER_INSURANCE'),   // untuk order, opsional
+        'filter' => env('BITESHIP_COURIER_FILTER'),      // untuk rates, CSV
+    ],
+
 ];

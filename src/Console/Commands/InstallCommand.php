@@ -71,6 +71,12 @@ class InstallCommand extends Command
         $this->line('  <comment>BITESHIP_ORIGIN_CONTACT_PHONE</comment>=0812xxxxxxxx');
         $this->line('  <comment>BITESHIP_ORIGIN_ADDRESS</comment>=Jl. Contoh No. 1');
         $this->newLine();
+        $this->line('<fg=gray>Optional — default courier (untuk ->defaultCourier() di RateRequest/OrderRequest):</>');
+        $this->line('  <comment>BITESHIP_COURIER_COMPANY</comment>=jne         <fg=gray># kurir untuk order</>');
+        $this->line('  <comment>BITESHIP_COURIER_TYPE</comment>=reg            <fg=gray># tipe layanan untuk order</>');
+        $this->line('  <comment>BITESHIP_COURIER_INSURANCE</comment>=true       <fg=gray># opsional</>');
+        $this->line('  <comment>BITESHIP_COURIER_FILTER</comment>=jne,sicepat  <fg=gray># kurir untuk rate check (CSV), override company</>');
+        $this->newLine();
         $this->line('<fg=gray>Optional — default shipper (nama toko/brand yang muncul di label cetak):</>');
         $this->line('  <comment>BITESHIP_SHIPPER_CONTACT_NAME</comment>=Nama Toko');
         $this->line('  <comment>BITESHIP_SHIPPER_CONTACT_PHONE</comment>=021xxxxxxx');

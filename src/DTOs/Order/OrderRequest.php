@@ -156,6 +156,28 @@ class OrderRequest
         return $this;
     }
 
+    /**
+     * Auto-fill courier dari config default_courier.
+     */
+    public function defaultCourier(): static
+    {
+        $config = config('biteship.default_courier', []);
+
+        if (! empty($config['company'])) {
+            $this->courier['courier_company'] = $config['company'];
+        }
+
+        if (! empty($config['type'])) {
+            $this->courier['courier_type'] = $config['type'];
+        }
+
+        if (! empty($config['insurance'])) {
+            $this->courier['courier_insurance'] = $config['insurance'];
+        }
+
+        return $this;
+    }
+
     // --- Shipper ---
 
     /**

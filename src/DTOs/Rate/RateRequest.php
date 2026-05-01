@@ -170,6 +170,23 @@ class RateRequest
         return $this;
     }
 
+    /**
+     * Pakai filter kurir dari config default_courier.
+     * Prioritas: 'filter' (CSV) → 'company' (single) → tidak diubah (semua kurir aktif).
+     */
+    public function defaultCourier(): static
+    {
+        $config = config('biteship.default_courier', []);
+
+        if (! empty($config['filter'])) {
+            $this->couriers = $config['filter'];
+        } elseif (! empty($config['company'])) {
+            $this->couriers = $config['company'];
+        }
+
+        return $this;
+    }
+
     // --- Delivery Type ---
 
     public function deliverNow(): static
