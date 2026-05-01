@@ -1,3 +1,10 @@
+# 1.0.0 (2026-05-01)
+
+
+### Features
+
+* initial release ([15f9a6e](https://github.com/aliziodev/laravel-biteship/commit/15f9a6efa8baa0506fa1e9b8587683bcec778540))
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
