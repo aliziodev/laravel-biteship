@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/aliziodev/laravel-biteship/compare/v1.2.0...v1.3.0) (2026-05-02)
+
+
+### Features
+
+* implement full Biteship API integration with core services, DTOs, and comprehensive test suite ([0da711a](https://github.com/aliziodev/laravel-biteship/commit/0da711ae6e8209ad3d3e567cb12f49a3dc84116a))
+
 # [1.2.0](https://github.com/aliziodev/laravel-biteship/compare/v1.1.0...v1.2.0) (2026-05-01)
 
 
