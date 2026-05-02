@@ -1,0 +1,106 @@
+{
+    "success": true,
+    "code": 20111002,
+    "object": "draft_order",
+    "id": "ef18275c-02a9-4887-a56b-f374edb96ec4",
+    "order_id": null,
+    "origin": {
+        "area_id": "IDNP6IDNC148IDND836IDNZ12430",
+        "address": "CITOS - Cilandak Town Square, Kota Jakarta Selatan, Jakarta 12430",
+        "note": null,
+        "contact_name": "John Doe",
+        "contact_phone": "081234567901",
+        "contact_email": "johndoe@example.com",
+        "coordinate": {
+            "latitude": null,
+            "longitude": null
+        },
+        "province_name": "DKI Jakarta",
+        "city_name": "Jakarta Selatan",
+        "district_name": "Cilandak",
+        "postal_code": 12430,
+        "collection_method": "pickup"
+    },
+    "destination": {
+        "area_id": "IDNP6IDNC147IDND835IDNZ10210",
+        "address": "Jl. Contoh No. 12",
+        "note": null,
+        "contact_name": "Jake Doe",
+        "contact_phone": "0812345678902",
+        "contact_email": "jakedoe@example.com",
+        "coordinate": {
+            "latitude": null,
+            "longitude": null
+        },
+        "province_name": "DKI Jakarta",
+        "city_name": "Jakarta Pusat",
+        "district_name": "Tanah Abang",
+        "postal_code": 10210,
+        "proof_of_delivery": {
+            "use": false,
+            "fee": 0,
+            "note": null,
+            "link": null
+        },
+        "cash_on_delivery": {
+            "payment_method": null,
+            "amount": null,
+            "amount_currency": "IDR",
+            "note": null,
+            "type": null
+        }
+    },
+    "courier": {
+        "name": null,
+        "phone": null,
+        "company": "sicepat",
+        "type": "reg",
+        "link": null,
+        "tracking_id": null,
+        "waybill_id": null,
+        "insurance": {
+            "amount": 0,
+            "fee": 0,
+            "note": "",
+            "amount_currency": "IDR",
+            "fee_currency": "IDR"
+        },
+        "routing_code": null
+    },
+    "delivery": {
+        "type": "now",
+        "datetime": "2024-09-19T03:40:22.810Z",
+        "note": null,
+        "distance": null,
+        "distance_unit": "kilometer"
+    },
+    "extra": [],
+    "tags": [],
+    "metadata": null,
+    "items": [
+        {
+            "name": "Black Leather Bag",
+            "description": "Goods",
+            "value": 30,
+            "currency": "IDR",
+            "quantity": 1,
+            "height": 1,
+            "width": 1,
+            "length": 1,
+            "weight": 1
+        }
+    ],
+    "currency": "IDR",
+    "tax_lines": [],
+    "price": 11500,
+    "status": "ready",
+    "reference_id": "example/35ef876e-3902-4186-873a-e9012ea1e354",
+    "invoice_id": "1209839012839012",
+    "user_id": "6448e9d77ff7510bbadfa605",
+    "created_at": "2024-09-19T03:40:22.802Z",
+    "updated_at": "2024-09-19T03:40:22.802Z",
+    "placed_at": null,
+    "ready_at": "2024-09-19T03:40:22.802Z",
+    "confirmed_at": null,
+    "deleted_at": null
+}

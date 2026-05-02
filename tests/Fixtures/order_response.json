@@ -1,41 +1,103 @@
 {
-    "success": true,
-    "message": "Order created successfully",
-    "id": "ORD-123456",
-    "reference_id": "my-order-001",
-    "status": "confirmed",
-    "price": 18000,
+  "success": true,
+  "message": "Order successfully created",
+  "object": "order",
+  "id": "5dd599ebdefcd4158eb8470b",
+  "draft_order_id": null,
+  "short_id": "URf_UO2nY3V",
+  "shipper": {
+    "name": "Biteship Indonesia",
+    "email": "Biteship@gmail.com",
+    "phone": "08123456789",
+    "organization": "Biteship"
+  },
+  "origin": {
+    "contact_name": "Akbar",
+    "contact_phone": "08123456789",
+    "coordinate": {
+      "latitude": -6.2253114,
+      "longitude": 106.7993735
+    },
+    "address": "Plaza Senayan, Jalan Asia Afrika, RT.1/RW.3",
+    "note": "Deket pintu masuk STC",
+    "postal_code": 12440
+  },
+  "destination": {
+    "contact_name": "Bambang",
+    "contact_phone": "088888888888",
+    "contact_email": "mirsa@biteship.com",
+    "address": "Lebak Bulus MRT, Jalan R.A.Kartini",
+    "note": "Di deket pintu MRT",
+    "proof_of_delivery": {
+      "use": false,
+      "fee": 0,
+      "note": null,
+      "link": null
+    },
+    "cash_on_delivery": {
+      "id": "77bb0f60b029822ecb1411da",
+      "amount": 500000,
+      "amount_currency": "IDR",
+      "fee": 20000,
+      "fee_currency": "IDR",
+      "note": null,
+      "type": "7_days"
+    },
+    "coordinate": {
+      "latitude": -6.28927,
+      "longitude": 106.77492000000007
+    },
+    "postal_code": 12950
+  },
+  "courier": {
+    "tracking_id": "6de509ebdefgh4158ij3451c",
+    "waybill_id": "WYB-1112223333443",
+    "company": "anteraja",
+    "name": null,
+    "phone": null,
+    "driver_name": null,
+    "driver_phone": null,
+    "driver_photo_url": null,
+    "driver_plate_number": null,
+    "type": "reg",
+    "link": null,
     "insurance": {
-        "fee": 500
+      "amount": 500000,
+      "amount_currency": "IDR",
+      "fee": 2500,
+      "fee_currency": "IDR",
+      "note": ""
     },
-    "courier": {
-        "company": "jne",
-        "type": "REG",
-        "tracking_id": null,
-        "waybill_id": null
-    },
-    "origin": {
-        "contact_name": "Ali Sender",
-        "contact_phone": "08123456789",
-        "address": "Jl. Sudirman No.1, Jakarta Pusat"
-    },
-    "destination": {
-        "contact_name": "Ani Recipient",
-        "contact_phone": "08987654321",
-        "address": "Jl. Merdeka No.10, Bandung",
-        "cash_on_delivery": 0,
-        "cash_on_delivery_fee": 0
-    },
-    "items": [
-        {
-            "name": "Sepatu Olahraga",
-            "description": "Ukuran 42",
-            "value": 250000,
-            "weight": 800,
-            "quantity": 1,
-            "length": 30,
-            "width": 20,
-            "height": 15
-        }
-    ]
+    "routing_code": null
+  },
+  "delivery": {
+    "datetime": "2029-09-24T12:00+07:00",
+    "note": null,
+    "type": "now",
+    "distance": 9.8,
+    "distance_unit": "kilometer"
+  },
+  "reference_id": null,
+  "invoice_id": null,
+  "items": [
+    {
+      "name": "Black L",
+      "description": "Feast/Bangkok'19 Invasion",
+      "sku": null,
+      "value": 165000,
+      "quantity": 1,
+      "length": 10,
+      "width": 10,
+      "height": 10,
+      "weight": 200
+    }
+  ],
+  "extra": [],
+  "currency": "IDR",
+  "tax_lines": [],
+  "price": 48000,
+  "metadata": {},
+  "tags": [],
+  "note": "Please be careful",
+  "status": "confirmed"
 }

@@ -6,6 +6,9 @@ use Aliziodev\Biteship\BiteshipServiceProvider;
 use Aliziodev\Biteship\Facades\Biteship;
 use Orchestra\Testbench\TestCase as Orchestra;
 
+/**
+ * @method array fixture(string $name)
+ */
 abstract class TestCase extends Orchestra
 {
     protected function getPackageProviders($app): array

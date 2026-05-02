@@ -16,7 +16,7 @@ class TrackingService
      */
     public function trackByOrderId(string $orderId): TrackingResponse
     {
-        $data = $this->client->get("/v1/trackings/{$orderId}/public");
+        $data = $this->client->get("/v1/trackings/{$orderId}");
 
         return TrackingResponse::fromArray($data);
     }

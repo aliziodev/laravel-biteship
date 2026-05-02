@@ -70,19 +70,49 @@ Semua fitur diakses via Facade `Biteship::`.
 use Aliziodev\Biteship\Facades\Biteship;
 ```
 
----
+## Maps (Area Search)
 
-## Location Search
-
-Autocomplete area pengiriman berdasarkan teks input. Gunakan `area_id` dari hasil ini untuk Rates dan Orders.
+Biteship menyediakan Maps API untuk mencari area pengiriman berdasarkan teks input (autocomplete). Gunakan `id` (Area ID) dari hasil ini untuk keperluan pembuatan order.
 
 ```php
-$areas = Biteship::locations()->search('Menteng');
+$areas = Biteship::maps()->areas('Menteng');
 // $areas → Collection of array
 
 foreach ($areas as $area) {
     // $area['id'], $area['name'], $area['postal_code']
 }
+```
+
+---
+
+## Locations (Address Book)
+
+Anda dapat menyimpan alamat yang sering digunakan menggunakan Location API Biteship.
+
+```php
+// 1. Create Location
+$location = Biteship::locations()->create([
+    'name' => 'Gudang Pusat',
+    'contact_name' => 'Budi',
+    'contact_phone' => '08123456789',
+    'address' => 'Jl. Sudirman No. 1',
+    'postal_code' => '12190',
+    'note' => 'Pintu gerbang warna merah',
+]);
+// $location['id'] -> 'loc_...'
+
+// 2. Find Location
+$location = Biteship::locations()->find('loc_123456');
+
+// 3. Update Location
+$location = Biteship::locations()->update('loc_123456', [
+    'contact_name' => 'Andi',
+    'contact_phone' => '08987654321',
+]);
+
+// 4. Delete Location
+$response = Biteship::locations()->delete('loc_123456');
+// $response['success'] -> true
 ```
 
 ---
@@ -139,6 +169,75 @@ Biteship::rates()->forget($request);
 
 ---
 
+## Draft Orders
+
+Draft Order API memungkinkan Anda menyimpan pesanan sebelum dikonfirmasi (misalnya saat di keranjang belanja). Draft order dapat diubah kurirnya, dan tidak akan menghasilkan resi (`waybill_id`) sampai dikonfirmasi.
+
+### Create Draft Order
+
+```php
+use Aliziodev\Biteship\DTOs\Order\OrderRequest;
+
+$request = (new OrderRequest)
+    ->defaultOrigin()
+    ->destinationContact('Budi', '08123456789')
+    ->destinationAddress('Jl. Merdeka No. 10')
+    ->addItem([
+        'name'     => 'Sepatu',
+        'value'    => 350000,
+        'weight'   => 500,
+        'quantity' => 1,
+    ]);
+
+// Kurir opsional di Draft Order
+// Jika kurir diset, status akan menjadi 'ready'
+// Jika tidak diset, status akan menjadi 'placed'
+
+$draft = Biteship::draftOrders()->create($request);
+
+// $draft->id              → Biteship draft order ID ('DRAFT-...')
+// $draft->status          → DraftOrderStatus enum
+```
+
+### Update, Find, Delete & Rates
+
+```php
+// Update (set kurir agar siap dikonfirmasi)
+$updated = Biteship::draftOrders()->setCourier($draft->id, 'jne', 'reg');
+// $updated->status → DraftOrderStatus::READY
+
+// Get detail
+$draft = Biteship::draftOrders()->find($draft->id);
+
+// Get ongkos kirim khusus untuk draft order ini (harus set kurir nantinya dari sini)
+$rates = Biteship::draftOrders()->rates($draft->id);
+// $rates->pricing → daftar harga
+
+// Delete draft
+$response = Biteship::draftOrders()->delete($draft->id);
+```
+
+### Confirm Draft Order
+
+Setelah draft order dalam status `ready` (memiliki kurir), Anda bisa mengkonfirmasinya menjadi order resmi.
+
+```php
+$order = Biteship::draftOrders()->confirm($draft->id);
+
+// Mengembalikan OrderResponse (sama dengan Biteship::orders()->create())
+// $order->id              → Biteship order ID ('ORD-...')
+// $order->status          → OrderStatus::CONFIRMED
+```
+
+### DraftOrderStatus Enum
+
+`DraftOrderStatus` memiliki 3 nilai:
+- `placed` : Baru dibuat, belum memiliki kurir.
+- `ready` : Sudah memiliki kurir, siap dikonfirmasi.
+- `confirmed` : Sudah dikonfirmasi menjadi order resmi.
+
+---
+
 ## Orders
 
 ### Create Order
@@ -161,13 +260,21 @@ $request = (new OrderRequest)
         'quantity' => 1,
     ])
     ->referenceId('INV-2025-001')              // optional: ID order dari sistem kamu
-    ->notes('Jangan dilipat');                 // optional
+    ->orderNote('Jangan dilipat');             // optional
+
+// Koordinat origin & destination (opsional tapi disarankan)
+$request->originCoordinate(-6.2253114, 106.7993735)
+        ->destinationCoordinate(-6.2892700, 106.7749200);
+
+// Pengaturan tambahan
+$request->collectionMethod('pickup')          // 'pickup' atau 'drop_off'
+        ->proofOfDelivery(true, 'Tolong foto rumah'); // minta kurir foto resi di lokasi
 
 // Dengan asuransi
 $request->courier('jne', 'reg', 'true');
 
 // COD
-$request->cashOnDelivery(350000);             // jumlah dalam rupiah
+$request->cashOnDelivery(350000, '7_days');   // jumlah dalam rupiah, tipe COD (opsional)
 
 // Kurir dari config — cocok kalau toko sudah lock ke satu kurir (misal kontrak eksklusif)
 $request->defaultCourier();                   // dari BITESHIP_COURIER_COMPANY + BITESHIP_COURIER_TYPE
@@ -190,8 +297,8 @@ $response = Biteship::orders()->create($request);
 // Get detail
 $order = Biteship::orders()->find($orderId);
 
-// Cancel
-$order = Biteship::orders()->cancel($orderId, 'Pembeli membatalkan');
+// Cancel (gunakan reason_code, dan reason_description opsional untuk 'others')
+$order = Biteship::orders()->cancel($orderId, 'others', 'Pembeli membatalkan');
 
 // Update (misal koreksi alamat sebelum pickup)
 $order = Biteship::orders()->update($orderId, [

@@ -18,8 +18,8 @@ class OrderPricePayload extends WebhookPayload
         return new static(
             order_id: $data['order_id'] ?? $data['id'] ?? '',
             raw: $data,
-            price: $data['price'] ?? 0,
-            insurance_fee: $data['insurance']['fee'] ?? 0,
+            price: $data['price'] ?? $data['order_price'] ?? 0,
+            insurance_fee: $data['insurance_fee'] ?? $data['insurance']['fee'] ?? 0,
         );
     }
 }

@@ -124,7 +124,7 @@ test('mock order can be cancelled', function () {
         ->addItem(['name' => 'Laptop', 'value' => 5000000, 'weight' => 2000, 'quantity' => 1]);
 
     $created = Biteship::orders()->create($orderRequest);
-    $cancelled = Biteship::orders()->cancel($created->id);
+    $cancelled = Biteship::orders()->cancel($created->id, 'others', 'change mind');
 
     expect($cancelled->status->value)->toBe('cancelled');
 });

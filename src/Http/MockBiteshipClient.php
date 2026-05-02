@@ -16,12 +16,20 @@ class MockBiteshipClient implements BiteshipClientInterface
         $this->simulateDelay();
         $this->checkErrorSimulation();
 
+        if (preg_match('/\/v1\/draft_orders\/([^\/]+)\/rates$/', $uri)) {
+            return $this->mockGetDraftOrderRatesResponse($uri, $query);
+        }
+
         if (str_contains($uri, 'rates')) {
             return $this->mockRatesResponse($query);
         }
 
+        if (preg_match('/\/v1\/draft_orders\/([^\/]+)$/', $uri)) {
+            return $this->mockGetDraftOrderResponse($uri);
+        }
+
         // Check for specific order GET endpoint pattern: /v1/orders/{orderId}
-        if (preg_match('/\/v1\/orders\/[^\/]+$/', $uri)) {
+        if (preg_match('/\/v1\/orders\/([^\/]+)$/', $uri)) {
             return $this->mockGetOrderResponse($uri);
         }
 
@@ -45,6 +53,11 @@ class MockBiteshipClient implements BiteshipClientInterface
             return $this->mockAreasResponse($query);
         }
 
+        // Location GET: /v1/locations/{id}
+        if (preg_match('/\/v1\/locations\/[^\/]+$/', $uri)) {
+            return ['success' => true, 'id' => 'loc_123', 'name' => 'Mock Location'];
+        }
+
         return ['success' => true];
     }
 
@@ -62,8 +75,26 @@ class MockBiteshipClient implements BiteshipClientInterface
             return $this->mockRatesResponse($data);
         }
 
-        if (str_contains($uri, 'orders')) {
+        if (preg_match('/\/v1\/draft_orders$/', $uri)) {
+            return $this->mockCreateDraftOrderResponse($data);
+        }
+
+        if (preg_match('/\/v1\/draft_orders\/([^\/]+)$/', $uri)) {
+            return $this->mockUpdateDraftOrderResponse($uri, $data);
+        }
+
+        if (preg_match('/\/v1\/draft_orders\/([^\/]+)\/confirm$/', $uri)) {
+            return $this->mockConfirmDraftOrderResponse($uri);
+        }
+
+        if (preg_match('/\/v1\/orders$/', $uri)) {
             return $this->mockCreateOrderResponse($data);
+        }
+
+        // Location Create: /v1/locations
+        // Location Update: /v1/locations/{id}
+        if (str_contains($uri, 'locations')) {
+            return ['success' => true, 'id' => 'loc_123', 'name' => $data['name'] ?? 'Mock Location'];
         }
 
         return ['success' => true];
@@ -81,6 +112,15 @@ class MockBiteshipClient implements BiteshipClientInterface
     {
         $this->simulateDelay();
         $this->checkErrorSimulation();
+
+        if (preg_match('/\/v1\/draft_orders\/([^\/]+)$/', $uri)) {
+            return $this->mockDeleteDraftOrderResponse($uri);
+        }
+
+        // Location DELETE: /v1/locations/{id}
+        if (str_contains($uri, 'locations')) {
+            return ['success' => true, 'message' => 'Location deleted successfully'];
+        }
 
         return ['success' => true];
     }
@@ -174,8 +214,10 @@ class MockBiteshipClient implements BiteshipClientInterface
                 'note' => $data['destination_note'] ?? null,
                 'area_id' => $data['destination_area_id'] ?? null,
                 'postal_code' => $data['destination_postal_code'] ?? null,
-                'cash_on_delivery' => $data['destination_cash_on_delivery'] ?? 0,
-                'cash_on_delivery_fee' => ($data['destination_cash_on_delivery'] ?? 0) > 0 ? 5000 : 0,
+                'cash_on_delivery' => [
+                    'amount' => $data['destination_cash_on_delivery'] ?? 0,
+                    'fee' => ($data['destination_cash_on_delivery'] ?? 0) > 0 ? 5000 : 0,
+                ],
             ],
             'items' => $data['items'] ?? [],
             'note' => $data['notes'] ?? null,
@@ -415,12 +457,135 @@ class MockBiteshipClient implements BiteshipClientInterface
     private function extractOrderIdFromUri(string $uri): ?string
     {
         // Extract order ID from /v1/orders/{orderId} or /v1/orders/{orderId}/cancel
-        // Case-insensitive to handle any casing in order IDs
-        if (preg_match('/orders\/([A-Za-z0-9\-]+)/i', $uri, $matches)) {
+        // Ensure it doesn't match draft_orders
+        if (preg_match('/\/v1\/orders\/([A-Za-z0-9\-]+)/i', $uri, $matches)) {
             return $matches[1];
         }
 
         return null;
+    }
+
+    private function extractDraftOrderIdFromUri(string $uri): ?string
+    {
+        if (preg_match('/\/v1\/draft_orders\/([A-Za-z0-9\-]+)/i', $uri, $matches)) {
+            return $matches[1];
+        }
+
+        return null;
+    }
+
+    private function mockCreateDraftOrderResponse(array $data): array
+    {
+        // For draft order, courier is optional, so we use validateRatesInput equivalent but lenient.
+        $draftOrderId = 'DRAFT-'.strtoupper(Str::random(10));
+
+        $status = 'placed';
+        if (! empty($data['courier_company']) && ! empty($data['courier_type'])) {
+            $status = 'ready';
+        }
+
+        // Filter empty strings so they don't overwrite the defaults below
+        $cleanData = array_filter($data, fn ($value) => $value !== '' && $value !== null);
+
+        $response = array_merge($this->mockCreateOrderResponse(array_merge([
+            'courier_company' => 'jne', // Temp fill to pass validateOrderInput if called inside mockCreateOrderResponse
+            'courier_type' => 'REG',
+            'origin_contact_name' => 'Draft',
+            'origin_contact_phone' => '000',
+            'origin_address' => 'Draft',
+            'destination_contact_name' => 'Draft',
+            'destination_contact_phone' => '000',
+            'destination_address' => 'Draft',
+            'items' => [['name' => 'Draft', 'weight' => 100, 'quantity' => 1, 'value' => 10000]],
+        ], $cleanData)), [
+            'id' => $draftOrderId,
+            'status' => $status,
+            'placed_at' => now()->toIso8601String(),
+            'ready_at' => $status === 'ready' ? now()->toIso8601String() : null,
+            'confirmed_at' => null,
+            'order_id' => null,
+        ]);
+
+        // Remove waybill and tracking id for drafts
+        $response['courier']['company'] = ! empty($data['courier_company']) ? $data['courier_company'] : null;
+        $response['courier']['type'] = ! empty($data['courier_type']) ? $data['courier_type'] : null;
+
+        if (! $response['courier']['company']) {
+            $response['price'] = 0;
+        }
+
+        cache()->put("mock_biteship_draft_order_{$draftOrderId}", $response, now()->addDays(7));
+
+        return $response;
+    }
+
+    private function mockGetDraftOrderResponse(string $uri): array
+    {
+        $draftOrderId = $this->extractDraftOrderIdFromUri($uri);
+        $cachedOrder = cache()->get("mock_biteship_draft_order_{$draftOrderId}");
+
+        if ($cachedOrder) {
+            return $cachedOrder;
+        }
+
+        return $this->mockCreateDraftOrderResponse([]);
+    }
+
+    private function mockUpdateDraftOrderResponse(string $uri, array $data): array
+    {
+        $draftOrderId = $this->extractDraftOrderIdFromUri($uri);
+        $cachedOrder = cache()->get("mock_biteship_draft_order_{$draftOrderId}");
+
+        if ($cachedOrder) {
+            if (! empty($data['courier_company'])) {
+                $cachedOrder['courier']['company'] = $data['courier_company'];
+                $cachedOrder['courier']['type'] = $data['courier_type'] ?? 'REG';
+                $cachedOrder['status'] = 'ready';
+                $cachedOrder['ready_at'] = now()->toIso8601String();
+                $cachedOrder['price'] = 15000;
+            }
+            cache()->put("mock_biteship_draft_order_{$draftOrderId}", $cachedOrder, now()->addDays(7));
+
+            return $cachedOrder;
+        }
+
+        return $this->mockCreateDraftOrderResponse($data);
+    }
+
+    private function mockConfirmDraftOrderResponse(string $uri): array
+    {
+        $draftOrderId = $this->extractDraftOrderIdFromUri($uri);
+        $cachedOrder = cache()->get("mock_biteship_draft_order_{$draftOrderId}");
+
+        if ($cachedOrder && $cachedOrder['status'] !== 'ready') {
+            throw new ValidationException('Draft order is not ready to be confirmed');
+        }
+
+        $orderId = 'ORD-'.strtoupper(Str::random(10));
+
+        $response = $cachedOrder ?? $this->mockCreateDraftOrderResponse(['courier_company' => 'jne', 'courier_type' => 'reg']);
+        $response['id'] = $orderId;
+        $response['draft_order_id'] = $draftOrderId;
+        $response['status'] = 'confirmed';
+        $response['confirmed_at'] = now()->toIso8601String();
+
+        cache()->put("mock_biteship_order_{$orderId}", $response, now()->addDays(7));
+
+        return $response;
+    }
+
+    private function mockGetDraftOrderRatesResponse(string $uri, array $query): array
+    {
+        return $this->mockRatesResponse([
+            'origin_area_id' => 'IDNP11IDNC167IDND1160IDZ12440',
+            'destination_area_id' => 'IDNP11IDNC167IDND1160IDZ12440',
+            'items' => [['weight' => 1000]],
+        ]);
+    }
+
+    private function mockDeleteDraftOrderResponse(string $uri): array
+    {
+        return ['success' => true, 'message' => 'Draft order deleted'];
     }
 
     private function checkErrorSimulation(): void

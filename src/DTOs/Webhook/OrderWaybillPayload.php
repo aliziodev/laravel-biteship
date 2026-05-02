@@ -18,8 +18,8 @@ class OrderWaybillPayload extends WebhookPayload
         return new static(
             order_id: $data['order_id'] ?? $data['id'] ?? '',
             raw: $data,
-            waybill_id: $data['courier']['waybill_id'] ?? '',
-            courier_tracking_id: $data['courier']['tracking_id'] ?? null,
+            waybill_id: $data['courier_waybill_id'] ?? $data['courier']['waybill_id'] ?? '',
+            courier_tracking_id: $data['courier_tracking_id'] ?? $data['courier']['tracking_id'] ?? null,
         );
     }
 }

@@ -1,5 +1,6 @@
 <?php
 
+use Aliziodev\Biteship\Events\OrderPriceUpdated;
 use Aliziodev\Biteship\Events\OrderStatusUpdated;
 use Aliziodev\Biteship\Events\OrderWaybillUpdated;
 use Illuminate\Support\Facades\Event;
@@ -13,7 +14,7 @@ beforeEach(function () {
 });
 
 test('valid order.status webhook dispatches OrderStatusUpdated', function () {
-    $payload = $this->fixture('webhook_order_status');
+    $payload = loadFixture('webhook_order_status');
 
     $this->postJson(config('biteship.webhook.path'), $payload)
         ->assertOk()
@@ -25,7 +26,7 @@ test('valid order.status webhook dispatches OrderStatusUpdated', function () {
 });
 
 test('valid order.waybill_id webhook dispatches OrderWaybillUpdated', function () {
-    $payload = $this->fixture('webhook_order_waybill');
+    $payload = loadFixture('webhook_order_waybill');
 
     $this->postJson(config('biteship.webhook.path'), $payload)
         ->assertOk();
@@ -52,7 +53,7 @@ test('invalid signature returns 401', function () {
 
     $this->postJson(
         config('biteship.webhook.path'),
-        $this->fixture('webhook_order_status'),
+        loadFixture('webhook_order_status'),
         ['X-My-Signature' => 'wrong-secret']
     )->assertUnauthorized();
 
@@ -67,7 +68,7 @@ test('valid signature passes verification', function () {
 
     $this->postJson(
         config('biteship.webhook.path'),
-        $this->fixture('webhook_order_status'),
+        loadFixture('webhook_order_status'),
         ['X-My-Signature' => 'correct-secret']
     )->assertOk();
 
@@ -83,7 +84,7 @@ test('missing signature header returns 401 when signature configured', function 
     // No signature header
     $this->postJson(
         config('biteship.webhook.path'),
-        $this->fixture('webhook_order_status'),
+        loadFixture('webhook_order_status'),
     )->assertUnauthorized();
 });
 
@@ -95,7 +96,7 @@ test('no signature config skips verification', function () {
 
     $this->postJson(
         config('biteship.webhook.path'),
-        $this->fixture('webhook_order_status'),
+        loadFixture('webhook_order_status'),
     )->assertOk();
 
     Event::assertDispatched(OrderStatusUpdated::class);

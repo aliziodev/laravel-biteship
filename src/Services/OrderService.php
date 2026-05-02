@@ -33,11 +33,23 @@ class OrderService
     }
 
     /**
-     * Cancel order — gunakan endpoint POST /cancel (bukan DELETE, deprecated 2025).
+     * Get available cancellation reasons from Biteship.
      */
-    public function cancel(string $orderId, ?string $reason = null): OrderResponse
+    public function getCancellationReasons(string $lang = 'id'): array
     {
-        $payload = $reason !== null ? ['cancellation_reason' => $reason] : [];
+        return $this->client->get('/v1/orders/cancellation_reasons', ['lang' => $lang]);
+    }
+
+    /**
+     * Cancel order — gunakan endpoint POST /cancel (bukan DELETE).
+     */
+    public function cancel(string $orderId, string $reasonCode, ?string $customReason = null): OrderResponse
+    {
+        $payload = ['cancellation_reason_code' => $reasonCode];
+
+        if ($reasonCode === 'others' && $customReason !== null) {
+            $payload['cancellation_reason'] = $customReason;
+        }
 
         $data = $this->client->post("/v1/orders/{$orderId}/cancel", $payload);
 

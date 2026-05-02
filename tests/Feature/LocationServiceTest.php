@@ -1,73 +1,69 @@
 <?php
 
 use Aliziodev\Biteship\Facades\Biteship;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 
 beforeEach(function () {
     Http::preventStrayRequests();
 });
 
-test('search returns collection of areas', function () {
+test('can create location', function () {
     Http::fake([
-        'api.biteship.com/v1/maps/areas*' => Http::response($this->fixture('maps_areas_response'), 200),
+        'api.biteship.com/v1/locations' => Http::response(['success' => true, 'id' => 'loc_123', 'name' => 'Toko Pusat'], 200),
     ]);
 
-    $areas = Biteship::locations()->search('Jakarta');
+    $response = Biteship::locations()->create([
+        'name' => 'Toko Pusat',
+        'contact_name' => 'Budi',
+        'contact_phone' => '08123456789',
+        'address' => 'Jl. Sudirman',
+        'postal_code' => '12190',
+    ]);
 
-    expect($areas)->toBeInstanceOf(Collection::class)
-        ->and($areas)->toHaveCount(3);
+    expect($response)->toHaveKey('id', 'loc_123')
+        ->and($response)->toHaveKey('name', 'Toko Pusat');
 });
 
-test('search passes correct query parameters', function () {
+test('can find location by id', function () {
     Http::fake([
-        'api.biteship.com/v1/maps/areas*' => Http::response($this->fixture('maps_areas_response'), 200),
+        'api.biteship.com/v1/locations/loc_123' => Http::response(['success' => true, 'id' => 'loc_123', 'name' => 'Toko Pusat'], 200),
     ]);
 
-    Biteship::locations()->search('Jakarta Selatan', 'single');
+    $response = Biteship::locations()->find('loc_123');
 
+    expect($response)->toHaveKey('id', 'loc_123')
+        ->and($response)->toHaveKey('name', 'Toko Pusat');
+});
+
+test('can update location', function () {
+    Http::fake([
+        'api.biteship.com/v1/locations/loc_123' => Http::response(['success' => true, 'id' => 'loc_123', 'name' => 'Toko Baru'], 200),
+    ]);
+
+    $response = Biteship::locations()->update('loc_123', [
+        'name' => 'Toko Baru',
+    ]);
+
+    expect($response)->toHaveKey('name', 'Toko Baru');
+
+    // Pastikan HTTP POST yang dikirim (bukan PUT)
     Http::assertSent(function ($request) {
-        return str_contains($request->url(), 'maps/areas')
-            && str_contains($request->url(), 'countries')
-            && str_contains($request->url(), 'input')
-            && str_contains($request->url(), 'type');
+        return str_contains($request->url(), 'locations/loc_123')
+            && $request->method() === 'POST';
     });
 });
 
-test('search with type all returns all areas', function () {
+test('can delete location', function () {
     Http::fake([
-        'api.biteship.com/v1/maps/areas*' => Http::response($this->fixture('maps_areas_response'), 200),
+        'api.biteship.com/v1/locations/loc_123' => Http::response(['success' => true, 'message' => 'Deleted'], 200),
     ]);
 
-    $areas = Biteship::locations()->search('Jakarta', 'all');
+    $response = Biteship::locations()->delete('loc_123');
 
-    expect($areas)->toHaveCount(3);
-});
+    expect($response)->toHaveKey('success', true);
 
-test('search returns areas with correct structure', function () {
-    Http::fake([
-        'api.biteship.com/v1/maps/areas*' => Http::response($this->fixture('maps_areas_response'), 200),
-    ]);
-
-    $areas = Biteship::locations()->search('Jakarta');
-
-    $firstArea = $areas->first();
-
-    expect($firstArea)->toHaveKey('id')
-        ->and($firstArea)->toHaveKey('name')
-        ->and($firstArea)->toHaveKey('description')
-        ->and($firstArea)->toHaveKey('province')
-        ->and($firstArea)->toHaveKey('city')
-        ->and($firstArea['name'])->toBe('Jakarta Selatan')
-        ->and($firstArea['province'])->toBe('DKI Jakarta');
-});
-
-test('search with empty query returns empty collection', function () {
-    Http::fake([
-        'api.biteship.com/v1/maps/areas*' => Http::response(['success' => true, 'areas' => []], 200),
-    ]);
-
-    $areas = Biteship::locations()->search('');
-
-    expect($areas)->toHaveCount(0);
+    Http::assertSent(function ($request) {
+        return str_contains($request->url(), 'locations/loc_123')
+            && $request->method() === 'DELETE';
+    });
 });

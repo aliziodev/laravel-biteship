@@ -18,6 +18,16 @@ class RateRequest
 
     private ?string $deliveryTime = null;
 
+    private ?string $type = null;
+
+    private ?int $codAmount = null;
+
+    private ?string $codType = null;
+
+    private ?int $courierInsurance = null;
+
+    private bool $forOrder = false;
+
     // --- Origin ---
 
     public function originAreaId(string $areaId): static
@@ -143,7 +153,7 @@ class RateRequest
     // --- Items ---
 
     /**
-     * @param  array{name: string, value: int, weight: int, quantity: int, length?: int, width?: int, height?: int, description?: string}  $item
+     * @param  array{name: string, value: int, weight: int, quantity: int, length?: int, width?: int, height?: int, description?: string, category?: string, sku?: string}  $item
      */
     public function addItem(array $item): static
     {
@@ -156,6 +166,41 @@ class RateRequest
     public function items(array $items): static
     {
         $this->items = $items;
+
+        return $this;
+    }
+
+    // --- Options ---
+
+    /** Filter berdasarkan tipe layanan (misal: 'instant', 'regular', 'cargo') */
+    public function type(string $type): static
+    {
+        $this->type = $type;
+
+        return $this;
+    }
+
+    /** Menghitung fee COD pada rates */
+    public function cashOnDelivery(int $amount, string $type = '7_days'): static
+    {
+        $this->codAmount = $amount;
+        $this->codType = $type;
+
+        return $this;
+    }
+
+    /** Menghitung fee asuransi pada rates */
+    public function courierInsurance(int $amount): static
+    {
+        $this->courierInsurance = $amount;
+
+        return $this;
+    }
+
+    /** Tandai bahwa rates ini untuk order (berguna untuk token/akurasi asuransi) */
+    public function forOrder(bool $forOrder = true): static
+    {
+        $this->forOrder = $forOrder;
 
         return $this;
     }
@@ -229,17 +274,6 @@ class RateRequest
 
     public function toArray(): array
     {
-        // Validasi: origin dan destination harus menggunakan metode lokasi yang sama
-        $originMethod = $this->getLocationMethod($this->origin);
-        $destinationMethod = $this->getLocationMethod($this->destination);
-
-        if ($originMethod !== null && $destinationMethod !== null && $originMethod !== $destinationMethod) {
-            throw new \InvalidArgumentException(
-                'Origin and destination must use the same location method. '.
-                "Origin uses '{$originMethod}', but destination uses '{$destinationMethod}'. ".
-                'Use both area_id, both postal_code, or both coordinate.'
-            );
-        }
 
         $payload = [
             'origin_contact_name' => $this->origin['contact_name'] ?? '',
@@ -252,8 +286,8 @@ class RateRequest
             'items' => $this->items,
         ];
 
-        // Location — area_id / postal_code / coordinate (salah satu)
-        foreach (['area_id', 'postal_code', 'coordinate'] as $field) {
+        // Location — area_id / postal_code
+        foreach (['area_id', 'postal_code'] as $field) {
             if (isset($this->origin[$field])) {
                 $payload['origin_'.$field] = $this->origin[$field];
             }
@@ -261,6 +295,17 @@ class RateRequest
             if (isset($this->destination[$field])) {
                 $payload['destination_'.$field] = $this->destination[$field];
             }
+        }
+
+        // Coordinates
+        if (isset($this->origin['coordinate'])) {
+            $payload['origin_latitude'] = $this->origin['coordinate']['latitude'];
+            $payload['origin_longitude'] = $this->origin['coordinate']['longitude'];
+        }
+
+        if (isset($this->destination['coordinate'])) {
+            $payload['destination_latitude'] = $this->destination['coordinate']['latitude'];
+            $payload['destination_longitude'] = $this->destination['coordinate']['longitude'];
         }
 
         // Optional fields
@@ -279,6 +324,23 @@ class RateRequest
         if ($this->deliveryDate !== null) {
             $payload['delivery_date'] = $this->deliveryDate;
             $payload['delivery_time'] = $this->deliveryTime;
+        }
+
+        if ($this->type !== null) {
+            $payload['type'] = $this->type;
+        }
+
+        if ($this->codAmount !== null) {
+            $payload['destination_cash_on_delivery'] = $this->codAmount;
+            $payload['destination_cash_on_delivery_type'] = $this->codType;
+        }
+
+        if ($this->courierInsurance !== null) {
+            $payload['courier_insurance'] = $this->courierInsurance;
+        }
+
+        if ($this->forOrder) {
+            $payload['for_order'] = true;
         }
 
         return $payload;

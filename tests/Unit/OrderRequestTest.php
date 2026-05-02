@@ -118,11 +118,11 @@ test('can set reference id', function () {
 
 test('can set notes', function () {
     $request = (new OrderRequest)
-        ->notes('Barang pecah belah, handle with care');
+        ->orderNote('Barang pecah belah, handle with care');
 
     $array = $request->toArray();
 
-    expect($array['notes'])->toBe('Barang pecah belah, handle with care');
+    expect($array['order_note'])->toBe('Barang pecah belah, handle with care');
 });
 
 test('can set origin email', function () {
@@ -176,7 +176,7 @@ test('builder pattern allows chaining', function () {
         ->courier('jne', 'REG')
         ->addItem(['name' => 'Baju', 'value' => 100000, 'weight' => 500, 'quantity' => 1])
         ->referenceId('ORD-INTERNAL-123')
-        ->notes('Handle with care');
+        ->orderNote('Handle with care');
 
     $array = $request->toArray();
 
@@ -185,5 +185,5 @@ test('builder pattern allows chaining', function () {
         ->and($array['courier_company'])->toBe('jne')
         ->and($array['items'])->toHaveCount(1)
         ->and($array['reference_id'])->toBe('ORD-INTERNAL-123')
-        ->and($array['notes'])->toBe('Handle with care');
+        ->and($array['order_note'])->toBe('Handle with care');
 });

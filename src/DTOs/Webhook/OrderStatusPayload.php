@@ -22,8 +22,8 @@ class OrderStatusPayload extends WebhookPayload
             order_id: $data['order_id'] ?? $data['id'] ?? '',
             raw: $data,
             status: OrderStatus::from($data['status'] ?? 'confirmed'),
-            waybill_id: $data['courier']['waybill_id'] ?? null,
-            courier_tracking_id: $data['courier']['tracking_id'] ?? null,
+            waybill_id: $data['courier_waybill_id'] ?? $data['courier']['waybill_id'] ?? null,
+            courier_tracking_id: $data['courier_tracking_id'] ?? $data['courier']['tracking_id'] ?? null,
         );
     }
 }

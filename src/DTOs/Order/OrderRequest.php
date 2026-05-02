@@ -14,9 +14,19 @@ class OrderRequest
 
     private ?string $referenceId = null;
 
-    private ?string $notes = null;
+    private ?string $orderNote = null;
 
     private array $shipper = [];
+
+    private string $deliveryType = 'now';
+
+    private ?string $deliveryDate = null;
+
+    private ?string $deliveryTime = null;
+
+    private array $metadata = [];
+
+    private array $tags = [];
 
     // --- Origin ---
 
@@ -30,6 +40,27 @@ class OrderRequest
     public function originPostalCode(string $postalCode): static
     {
         $this->origin['postal_code'] = $postalCode;
+
+        return $this;
+    }
+
+    public function originCoordinate(float $lat, float $lng): static
+    {
+        $this->origin['coordinate'] = ['latitude' => $lat, 'longitude' => $lng];
+
+        return $this;
+    }
+
+    public function originLocationId(string $locationId): static
+    {
+        $this->origin['location_id'] = $locationId;
+
+        return $this;
+    }
+
+    public function originCollectionMethod(string $method): static
+    {
+        $this->origin['collection_method'] = $method;
 
         return $this;
     }
@@ -111,6 +142,20 @@ class OrderRequest
         return $this;
     }
 
+    public function destinationCoordinate(float $lat, float $lng): static
+    {
+        $this->destination['coordinate'] = ['latitude' => $lat, 'longitude' => $lng];
+
+        return $this;
+    }
+
+    public function destinationLocationId(string $locationId): static
+    {
+        $this->destination['location_id'] = $locationId;
+
+        return $this;
+    }
+
     public function destinationContact(string $name, string $phone, ?string $email = null): static
     {
         $this->destination['contact_name'] = $name;
@@ -135,9 +180,20 @@ class OrderRequest
     }
 
     /** Cash on delivery — jumlah dalam rupiah. */
-    public function cashOnDelivery(int $amount): static
+    public function cashOnDelivery(int $amount, string $type = '7_days'): static
     {
         $this->destination['cash_on_delivery'] = $amount;
+        $this->destination['cash_on_delivery_type'] = $type;
+
+        return $this;
+    }
+
+    public function proofOfDelivery(bool $use = true, ?string $note = null): static
+    {
+        $this->destination['proof_of_delivery'] = $use;
+        if ($note !== null) {
+            $this->destination['proof_of_delivery_note'] = $note;
+        }
 
         return $this;
     }
@@ -281,9 +337,41 @@ class OrderRequest
         return $this;
     }
 
-    public function notes(string $notes): static
+    public function orderNote(string $notes): static
     {
-        $this->notes = $notes;
+        $this->orderNote = $notes;
+
+        return $this;
+    }
+
+    public function metadata(array $data): static
+    {
+        $this->metadata = $data;
+
+        return $this;
+    }
+
+    public function tags(array $tags): static
+    {
+        $this->tags = $tags;
+
+        return $this;
+    }
+
+    // --- Delivery Time ---
+
+    public function deliverNow(): static
+    {
+        $this->deliveryType = 'now';
+
+        return $this;
+    }
+
+    public function deliverScheduled(string $date, string $time): static
+    {
+        $this->deliveryType = 'scheduled';
+        $this->deliveryDate = $date;
+        $this->deliveryTime = $time;
 
         return $this;
     }
@@ -304,16 +392,18 @@ class OrderRequest
             'courier_company' => $this->courier['courier_company'] ?? '',
             'courier_type' => $this->courier['courier_type'] ?? '',
 
+            'delivery_type' => $this->deliveryType,
+
             'items' => $this->items,
         ];
 
         // Location fields
-        foreach (['area_id', 'postal_code'] as $field) {
+        foreach (['area_id', 'postal_code', 'location_id', 'coordinate', 'collection_method'] as $field) {
             if (isset($this->origin[$field])) {
                 $payload['origin_'.$field] = $this->origin[$field];
             }
 
-            if (isset($this->destination[$field])) {
+            if (isset($this->destination[$field]) && ! in_array($field, ['collection_method'])) {
                 $payload['destination_'.$field] = $this->destination[$field];
             }
         }
@@ -338,6 +428,16 @@ class OrderRequest
 
         if (isset($this->destination['cash_on_delivery'])) {
             $payload['destination_cash_on_delivery'] = $this->destination['cash_on_delivery'];
+            if (isset($this->destination['cash_on_delivery_type'])) {
+                $payload['destination_cash_on_delivery_type'] = $this->destination['cash_on_delivery_type'];
+            }
+        }
+
+        if (isset($this->destination['proof_of_delivery'])) {
+            $payload['destination_proof_of_delivery'] = $this->destination['proof_of_delivery'];
+            if (isset($this->destination['proof_of_delivery_note'])) {
+                $payload['destination_proof_of_delivery_note'] = $this->destination['proof_of_delivery_note'];
+            }
         }
 
         // Optional courier
@@ -350,8 +450,21 @@ class OrderRequest
             $payload['reference_id'] = $this->referenceId;
         }
 
-        if ($this->notes !== null) {
-            $payload['notes'] = $this->notes;
+        if ($this->orderNote !== null) {
+            $payload['order_note'] = $this->orderNote;
+        }
+
+        if (! empty($this->metadata)) {
+            $payload['metadata'] = $this->metadata;
+        }
+
+        if (! empty($this->tags)) {
+            $payload['tags'] = $this->tags;
+        }
+
+        if ($this->deliveryType === 'scheduled' && $this->deliveryDate && $this->deliveryTime) {
+            $payload['delivery_date'] = $this->deliveryDate;
+            $payload['delivery_time'] = $this->deliveryTime;
         }
 
         // Optional shipper (branding/labeling)

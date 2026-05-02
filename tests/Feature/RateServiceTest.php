@@ -25,7 +25,7 @@ function rateRequest(): RateRequest
 
 test('check returns RateResponse with pricing collection', function () {
     Http::fake([
-        'api.biteship.com/v1/rates/couriers' => Http::response($this->fixture('rate_response'), 200),
+        'api.biteship.com/v1/rates/couriers' => Http::response(loadFixture('rate_response'), 200),
     ]);
 
     $response = Biteship::rates()->check(rateRequest());
@@ -37,7 +37,7 @@ test('check returns RateResponse with pricing collection', function () {
 
 test('cheapest returns lowest price courier', function () {
     Http::fake([
-        'api.biteship.com/v1/rates/couriers' => Http::response($this->fixture('rate_response'), 200),
+        'api.biteship.com/v1/rates/couriers' => Http::response(loadFixture('rate_response'), 200),
     ]);
 
     $response = Biteship::rates()->check(rateRequest());
@@ -49,7 +49,7 @@ test('cheapest returns lowest price courier', function () {
 
 test('byCourier filters correctly', function () {
     Http::fake([
-        'api.biteship.com/v1/rates/couriers' => Http::response($this->fixture('rate_response'), 200),
+        'api.biteship.com/v1/rates/couriers' => Http::response(loadFixture('rate_response'), 200),
     ]);
 
     $response = Biteship::rates()->check(rateRequest());
@@ -60,7 +60,7 @@ test('byCourier filters correctly', function () {
 
 test('codAvailable filters COD-capable couriers only', function () {
     Http::fake([
-        'api.biteship.com/v1/rates/couriers' => Http::response($this->fixture('rate_response'), 200),
+        'api.biteship.com/v1/rates/couriers' => Http::response(loadFixture('rate_response'), 200),
     ]);
 
     $response = Biteship::rates()->check(rateRequest());
@@ -74,8 +74,8 @@ test('cache prevents duplicate API call for same payload', function () {
 
     Http::fake([
         'api.biteship.com/v1/rates/couriers' => Http::sequence()
-            ->push($this->fixture('rate_response'), 200)
-            ->push($this->fixture('rate_response'), 200),
+            ->push(loadFixture('rate_response'), 200)
+            ->push(loadFixture('rate_response'), 200),
     ]);
 
     $request = rateRequest();
@@ -92,8 +92,8 @@ test('fresh bypasses cache', function () {
 
     Http::fake([
         'api.biteship.com/v1/rates/couriers' => Http::sequence()
-            ->push($this->fixture('rate_response'), 200)
-            ->push($this->fixture('rate_response'), 200),
+            ->push(loadFixture('rate_response'), 200)
+            ->push(loadFixture('rate_response'), 200),
     ]);
 
     $request = rateRequest();

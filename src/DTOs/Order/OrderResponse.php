@@ -19,7 +19,13 @@ class OrderResponse
         public readonly int $cod_fee,
         public readonly array $origin,
         public readonly array $destination,
+        public readonly array $shipper,
+        public readonly array $delivery,
         public readonly array $items,
+        public readonly ?string $short_id,
+        public readonly ?string $invoice_id,
+        public readonly ?string $cancellation_reason_code,
+        public readonly ?string $cancellation_reason,
         public readonly array $raw,           // raw response untuk label generation
     ) {}
 
@@ -34,11 +40,17 @@ class OrderResponse
             courier_tracking_id: $data['courier']['tracking_id'] ?? null,
             waybill_id: $data['courier']['waybill_id'] ?? null,
             price: $data['price'] ?? 0,
-            insurance_fee: $data['insurance']['fee'] ?? 0,
-            cod_fee: $data['destination']['cash_on_delivery_fee'] ?? 0,
+            insurance_fee: $data['courier']['insurance']['fee'] ?? 0,
+            cod_fee: $data['destination']['cash_on_delivery']['fee'] ?? 0,
             origin: $data['origin'] ?? [],
             destination: $data['destination'] ?? [],
+            shipper: $data['shipper'] ?? [],
+            delivery: $data['delivery'] ?? [],
             items: $data['items'] ?? [],
+            short_id: $data['short_id'] ?? null,
+            invoice_id: $data['invoice_id'] ?? null,
+            cancellation_reason_code: $data['cancellation_reason_code'] ?? null,
+            cancellation_reason: $data['cancellation_reason'] ?? null,
             raw: $data,
         );
     }

@@ -25,46 +25,48 @@ function orderRequest(): OrderRequest
 
 test('create returns OrderResponse with correct data', function () {
     Http::fake([
-        'api.biteship.com/v1/orders' => Http::response($this->fixture('order_response'), 200),
+        'api.biteship.com/v1/orders' => Http::response(loadFixture('order_response'), 200),
     ]);
 
     $response = Biteship::orders()->create(orderRequest());
 
     expect($response)->toBeInstanceOf(OrderResponse::class)
-        ->and($response->id)->toBe('ORD-123456')
+        ->and($response->id)->toBe('5dd599ebdefcd4158eb8470b')
         ->and($response->status)->toBe(OrderStatus::Confirmed)
-        ->and($response->courier_company)->toBe('jne')
-        ->and($response->price)->toBe(18000);
+        ->and($response->courier_company)->toBe('anteraja')
+        ->and($response->price)->toBe(48000);
 });
 
 test('find returns OrderResponse', function () {
     Http::fake([
-        'api.biteship.com/v1/orders/ORD-123456' => Http::response($this->fixture('order_response'), 200),
+        'api.biteship.com/v1/orders/5dd599ebdefcd4158eb8470b' => Http::response(loadFixture('order_response'), 200),
     ]);
 
-    $response = Biteship::orders()->find('ORD-123456');
+    $response = Biteship::orders()->find('5dd599ebdefcd4158eb8470b');
 
-    expect($response->id)->toBe('ORD-123456');
+    expect($response->id)->toBe('5dd599ebdefcd4158eb8470b');
 });
 
 test('cancel sends POST to cancel endpoint', function () {
-    $cancelledFixture = array_merge($this->fixture('order_response'), ['status' => 'cancelled']);
+    $cancelledFixture = array_merge(loadFixture('order_response'), ['status' => 'cancelled']);
 
     Http::fake([
-        'api.biteship.com/v1/orders/ORD-123456/cancel' => Http::response($cancelledFixture, 200),
+        'api.biteship.com/v1/orders/5dd599ebdefcd4158eb8470b/cancel' => Http::response($cancelledFixture, 200),
     ]);
 
-    $response = Biteship::orders()->cancel('ORD-123456', 'Pembeli membatalkan');
+    $response = Biteship::orders()->cancel('5dd599ebdefcd4158eb8470b', 'others', 'Pembeli membatalkan');
 
     expect($response->status)->toBe(OrderStatus::Cancelled);
 
     Http::assertSent(fn ($request) => str_contains($request->url(), '/cancel') && $request->method() === 'POST'
+        && $request['cancellation_reason_code'] === 'others'
+        && $request['cancellation_reason'] === 'Pembeli membatalkan'
     );
 });
 
 test('isCancellable returns true for confirmed status', function () {
     Http::fake([
-        'api.biteship.com/v1/orders' => Http::response($this->fixture('order_response'), 200),
+        'api.biteship.com/v1/orders' => Http::response(loadFixture('order_response'), 200),
     ]);
 
     $response = Biteship::orders()->create(orderRequest());
@@ -74,11 +76,11 @@ test('isCancellable returns true for confirmed status', function () {
 
 test('raw response is stored in OrderResponse', function () {
     Http::fake([
-        'api.biteship.com/v1/orders' => Http::response($this->fixture('order_response'), 200),
+        'api.biteship.com/v1/orders' => Http::response(loadFixture('order_response'), 200),
     ]);
 
     $response = Biteship::orders()->create(orderRequest());
 
     expect($response->raw)->toBeArray()
-        ->toHaveKey('id', 'ORD-123456');
+        ->toHaveKey('id', '5dd599ebdefcd4158eb8470b');
 });
