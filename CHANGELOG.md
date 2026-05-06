@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/aliziodev/laravel-biteship/compare/v1.3.0...v1.4.0) (2026-05-06)
+
+
+### Features
+
+* add HasBiteship trait to manage order synchronization, tracking, and label generation for Eloquent models ([0b708db](https://github.com/aliziodev/laravel-biteship/commit/0b708db26bca58a8d82613c3cc68c2701957cb8b))
+
 # [1.3.0](https://github.com/aliziodev/laravel-biteship/compare/v1.2.0...v1.3.0) (2026-05-02)
 
 
