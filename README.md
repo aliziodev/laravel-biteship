@@ -126,6 +126,49 @@ $request->couriers(['jne', 'sicepat', 'jnt']);
 $request->defaultCourier();
 ```
 
+### Multi-method Location (area_id + coordinate dalam satu request)
+
+Beberapa kurir seperti JNE, JNT, SiCepat, dan Anteraja menggunakan `area_id` untuk penentuan lokasi, sementara kurir on-demand seperti Gojek dan Lalamove membutuhkan `coordinate` (latitude/longitude). Biteship mendukung pengiriman kedua field sekaligus dalam satu request — setiap kurir akan menggunakan field yang sesuai.
+
+```php
+$request = (new RateRequest)
+    // Origin: set area_id DAN coordinate sekaligus
+    ->originAreaId('IDNP6...')
+    ->originCoordinate(-6.2088, 106.8456)
+    ->originContact('Toko', '08123456789')
+    ->originAddress('Jl. Sudirman No. 1')
+    // Destination: sama
+    ->destinationAreaId('IDNP7...')
+    ->destinationCoordinate(-6.9147, 107.6098)
+    ->destinationContact('Budi', '08198765432')
+    ->destinationAddress('Jl. Asia Afrika No. 5')
+    // Semua kurir dalam satu request
+    ->couriers(['jnt', 'jne', 'sicepat', 'anteraja', 'lalamove', 'gojek'])
+    ->addItem([...]);
+
+$response = Biteship::rates()->check($request);
+```
+
+Jika menggunakan `defaultOrigin()`, pastikan config mengisi keduanya:
+
+```env
+BITESHIP_ORIGIN_AREA_ID=IDNP6...
+BITESHIP_ORIGIN_LATITUDE=-6.2088
+BITESHIP_ORIGIN_LONGITUDE=106.8456
+```
+
+```php
+// defaultOrigin() otomatis set area_id + coordinate jika keduanya ada di config
+$request = (new RateRequest)
+    ->defaultOrigin()
+    ->destinationAreaId('IDNP7...')
+    ->destinationCoordinate(-6.9147, 107.6098)
+    ->destinationContact('Budi', '08198765432')
+    ->destinationAddress('Jl. Asia Afrika No. 5')
+    ->couriers(['jnt', 'jne', 'sicepat', 'anteraja', 'lalamove', 'gojek'])
+    ->addItem([...]);
+```
+
 **Cache & fresh:**
 
 ```php

@@ -257,26 +257,6 @@ class RateRequest
         return $this;
     }
 
-    /**
-     * Detect which location method is used: area_id, postal_code, or coordinate.
-     */
-    private function getLocationMethod(array $location): ?string
-    {
-        if (isset($location['area_id'])) {
-            return 'area_id';
-        }
-
-        if (isset($location['postal_code'])) {
-            return 'postal_code';
-        }
-
-        if (isset($location['coordinate'])) {
-            return 'coordinate';
-        }
-
-        return null;
-    }
-
     // --- Build ---
 
     public function toArray(): array
