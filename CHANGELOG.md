@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/aliziodev/laravel-biteship/compare/v1.5.0...v1.6.0) (2026-05-18)
+
+
+### Features
+
+* add RateRequest DTO for flexible shipping rate configuration and update documentation ([4c38d70](https://github.com/aliziodev/laravel-biteship/commit/4c38d70d4a2cde6799f4783c466a991cb243b682))
+
 # [1.5.0](https://github.com/aliziodev/laravel-biteship/compare/v1.4.0...v1.5.0) (2026-05-18)
 
 
