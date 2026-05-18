@@ -66,7 +66,10 @@ class InstallCommand extends Command
 
         $this->newLine();
         $this->line('<fg=gray>Optional — default origin (untuk ->defaultOrigin() di RateRequest/OrderRequest):</>');
-        $this->line('  <comment>BITESHIP_ORIGIN_AREA_ID</comment>=IDNP6...   <fg=gray># atau pakai BITESHIP_ORIGIN_POSTAL_CODE</>');
+        $this->line('  <comment>BITESHIP_ORIGIN_AREA_ID</comment>=IDNP6...      <fg=gray># atau pakai BITESHIP_ORIGIN_POSTAL_CODE</>');
+        $this->line('  <fg=gray>  # Coordinate (hanya untuk RateRequest, tidak bisa dipakai bersamaan dengan area_id/postal_code):</>');
+        $this->line('  <comment>BITESHIP_ORIGIN_LATITUDE</comment>=-6.2088       <fg=gray># opsional</>');
+        $this->line('  <comment>BITESHIP_ORIGIN_LONGITUDE</comment>=106.8456     <fg=gray># opsional</>');
         $this->line('  <comment>BITESHIP_ORIGIN_CONTACT_NAME</comment>=Nama Pengirim');
         $this->line('  <comment>BITESHIP_ORIGIN_CONTACT_PHONE</comment>=0812xxxxxxxx');
         $this->line('  <comment>BITESHIP_ORIGIN_ADDRESS</comment>=Jl. Contoh No. 1');

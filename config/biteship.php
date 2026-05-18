@@ -52,17 +52,20 @@ return [
      * toko, atau titik pickup manapun. Dipakai sebagai default saat kamu
      * membuat order tanpa menyertakan origin secara eksplisit.
      *
-     * Wajib isi salah satu: area_id ATAU postal_code.
-     * Kalau keduanya diisi, area_id yang dipakai.
+     * Wajib isi salah satu: area_id, postal_code, ATAU coordinate (lat + lng).
+     * Kalau beberapa diisi sekaligus, prioritas: area_id → postal_code → coordinate.
+     * Coordinate hanya didukung oleh RateRequest, tidak oleh OrderRequest.
      */
     'default_origin' => [
-        'area_id' => env('BITESHIP_ORIGIN_AREA_ID'),      // lebih presisi, diutamakan
+        'area_id' => env('BITESHIP_ORIGIN_AREA_ID'),          // lebih presisi, diutamakan
         'postal_code' => env('BITESHIP_ORIGIN_POSTAL_CODE'),  // fallback jika area_id tidak ada
+        'latitude' => env('BITESHIP_ORIGIN_LATITUDE'),         // coordinate — hanya untuk rates
+        'longitude' => env('BITESHIP_ORIGIN_LONGITUDE'),       // coordinate — hanya untuk rates
         'contact_name' => env('BITESHIP_ORIGIN_CONTACT_NAME'),
         'contact_phone' => env('BITESHIP_ORIGIN_CONTACT_PHONE'),
         'contact_email' => env('BITESHIP_ORIGIN_CONTACT_EMAIL'),
         'address' => env('BITESHIP_ORIGIN_ADDRESS'),
-        'note' => env('BITESHIP_ORIGIN_NOTE'),          // petunjuk untuk kurir, opsional
+        'note' => env('BITESHIP_ORIGIN_NOTE'),                 // petunjuk untuk kurir, opsional
     ],
 
     /*

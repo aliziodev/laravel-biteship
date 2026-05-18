@@ -85,6 +85,13 @@ class RateRequest
             $this->origin['postal_code'] = $config['postal_code'];
         }
 
+        if (! empty($config['latitude']) && ! empty($config['longitude'])) {
+            $this->origin['coordinate'] = [
+                'latitude' => (float) $config['latitude'],
+                'longitude' => (float) $config['longitude'],
+            ];
+        }
+
         if (! empty($config['contact_name'])) {
             $this->origin['contact_name'] = $config['contact_name'];
         }

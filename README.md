@@ -39,7 +39,10 @@ BITESHIP_API_KEY=biteship_live.xxxxxxxxxxxx
 # BITESHIP_API_KEY=biteship_test.xxxxxxxxxxxx
 
 # Optional: default origin (dipakai oleh ->defaultOrigin())
-BITESHIP_ORIGIN_AREA_ID=IDNP6...
+BITESHIP_ORIGIN_AREA_ID=IDNP6...          # atau pakai BITESHIP_ORIGIN_POSTAL_CODE
+# Coordinate sebagai alternatif area_id/postal_code (hanya untuk RateRequest):
+BITESHIP_ORIGIN_LATITUDE=-6.2088
+BITESHIP_ORIGIN_LONGITUDE=106.8456
 BITESHIP_ORIGIN_CONTACT_NAME=Nama Pengirim
 BITESHIP_ORIGIN_CONTACT_PHONE=0812xxxxxxxx
 BITESHIP_ORIGIN_ADDRESS=Jl. Contoh No. 1
@@ -81,38 +84,6 @@ $areas = Biteship::maps()->areas('Menteng');
 foreach ($areas as $area) {
     // $area['id'], $area['name'], $area['postal_code']
 }
-```
-
----
-
-## Locations (Address Book)
-
-Anda dapat menyimpan alamat yang sering digunakan menggunakan Location API Biteship.
-
-```php
-// 1. Create Location
-$location = Biteship::locations()->create([
-    'name' => 'Gudang Pusat',
-    'contact_name' => 'Budi',
-    'contact_phone' => '08123456789',
-    'address' => 'Jl. Sudirman No. 1',
-    'postal_code' => '12190',
-    'note' => 'Pintu gerbang warna merah',
-]);
-// $location['id'] -> 'loc_...'
-
-// 2. Find Location
-$location = Biteship::locations()->find('loc_123456');
-
-// 3. Update Location
-$location = Biteship::locations()->update('loc_123456', [
-    'contact_name' => 'Andi',
-    'contact_phone' => '08987654321',
-]);
-
-// 4. Delete Location
-$response = Biteship::locations()->delete('loc_123456');
-// $response['success'] -> true
 ```
 
 ---
