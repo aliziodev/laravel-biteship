@@ -1,3 +1,10 @@
+# [1.5.0](https://github.com/aliziodev/laravel-biteship/compare/v1.4.0...v1.5.0) (2026-05-18)
+
+
+### Features
+
+* add comprehensive configuration file, install command, and coordinate support for RateRequest DTOs ([2d52c4c](https://github.com/aliziodev/laravel-biteship/commit/2d52c4cd43d3d2506ab7d5f68cdb9b035282cd86))
+
 # [1.4.0](https://github.com/aliziodev/laravel-biteship/compare/v1.3.0...v1.4.0) (2026-05-06)
 
 
